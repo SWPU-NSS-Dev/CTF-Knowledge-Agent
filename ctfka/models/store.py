@@ -18,6 +18,7 @@ from urllib.parse import urlsplit, urlunsplit
 from ctfka.contracts import DiscoveredItem, FetchedDocument, ParsedDocument
 from ctfka.indexing.storage import IndexStorageMixin
 from ctfka.ingestion.parser import parse_document
+from ctfka.knowledge.storage import KnowledgeStorageMixin
 
 _SCHEMA_VERSION = 2
 _SYMBOL_RE = re.compile(r"(?<![\w])(?:[A-Za-z_][A-Za-z0-9_.$@:+/-]*|CVE-\d{4}-\d+)(?![\w])")
@@ -68,7 +69,7 @@ def _simhash(text: str) -> int:
     return value if value < (1 << 63) else value - (1 << 64)
 
 
-class Store(IndexStorageMixin):
+class Store(IndexStorageMixin, KnowledgeStorageMixin):
     """SQLite-backed article, job, state and immutable raw snapshot store."""
 
     def __init__(self, data_dir: str | Path):
@@ -137,6 +138,7 @@ class Store(IndexStorageMixin):
                     )
                 db.execute("INSERT OR REPLACE INTO schema_migrations VALUES(2,?)", (_now(),))
         self._initialize_stage2()
+        self._initialize_stage3()
 
     def register_source(self, name: str, adapter: str, config: dict | None = None) -> None:
         now = _now()
@@ -474,6 +476,40 @@ class Store(IndexStorageMixin):
                 v["metadata"] = json.loads(v.pop("metadata_json"))
             return result
 
+    def get_article_version(self, article_id: str, version: int) -> dict | None:
+        """Return one immutable historical body with its source identity."""
+        with self._connection() as db:
+            row = db.execute(
+                "SELECT v.*,a.url,a.source,a.identity,a.id AS article_id FROM article_versions v JOIN articles a ON a.id=v.article_id WHERE v.article_id=? AND v.version=?",
+                (article_id, version),
+            ).fetchone()
+            if row is None:
+                return None
+            result = dict(row)
+            result["metadata"] = json.loads(result.pop("metadata_json"))
+            return result
+
+    def list_knowledge(self, limit: int = 50, offset: int = 0) -> list[dict]:
+        cards = super().list_knowledge(limit, offset)
+        with self._connection() as db:
+            for card in cards:
+                row = db.execute("SELECT revision FROM knowledge_card_revisions WHERE card_id=?", (card["id"],)).fetchone()
+                card["revision"] = row[0] if row else 1
+        return cards
+
+    def get_knowledge(self, card_id: str) -> dict | None:
+        card = super().get_knowledge(card_id)
+        if card is None:
+            return None
+        with self._connection() as db:
+            row = db.execute("SELECT revision FROM knowledge_card_revisions WHERE card_id=?", (card_id,)).fetchone()
+            card["revision"] = row[0] if row else 1
+            card["edits"] = [
+                {"revision": edit["revision"], "before": json.loads(edit["before_json"]), "after": json.loads(edit["after_json"]), "created_at": edit["created_at"]}
+                for edit in db.execute("SELECT * FROM knowledge_card_edits WHERE card_id=? ORDER BY revision", (card_id,))
+            ]
+        return card
+
     def stats(self) -> dict:
         with self._connection() as db:
             return {
@@ -492,6 +528,10 @@ class Store(IndexStorageMixin):
                 ),
                 "schema_version": _SCHEMA_VERSION,
                 "stage2_schema_version": db.execute("SELECT COALESCE(MAX(version),0) FROM stage2_schema_migrations").fetchone()[0],
+                "stage3_schema_version": db.execute("SELECT COALESCE(MAX(version),0) FROM stage3_schema_migrations").fetchone()[0],
+                "graph_entities": db.execute("SELECT count(*) FROM entities").fetchone()[0],
+                "graph_relations": db.execute("SELECT count(*) FROM relations").fetchone()[0],
+                "pending_reviews": db.execute("SELECT (SELECT count(*) FROM entities WHERE verification_status='unverified')+(SELECT count(*) FROM relations WHERE status='candidate')+(SELECT count(*) FROM knowledge_cards WHERE verification_status='unverified')").fetchone()[0],
             }
 
     def rebuild_index(self) -> dict:

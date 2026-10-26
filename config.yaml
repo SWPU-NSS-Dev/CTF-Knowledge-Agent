@@ -18,6 +18,12 @@ retrieval:
   context_chars: 24000
 chunking:
   max_chars: 1800
+agent:
+  max_tool_calls: 8
+  max_retrieval_results: 8
+  max_context_tokens: 12000
+  timeout_seconds: 180
+  max_relation_depth: 3
 workers: 8
 token: null
 host: 127.0.0.1

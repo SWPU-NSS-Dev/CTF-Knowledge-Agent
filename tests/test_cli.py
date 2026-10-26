@@ -76,3 +76,29 @@ def test_crawl_exits_nonzero_when_fetches_fail(tmp_path, monkeypatch):
     output = json.loads(result.output)
     assert output["run"]["failed"] == 1
     assert output["run"]["completed"] == 0
+
+
+def test_demo_seed_and_graph_attack_fix_are_explicit_json_workflow(tmp_path):
+    runner = CliRunner()
+    seeded = runner.invoke(app, ["--data-dir", str(tmp_path), "demo", "seed-awdp"])
+    assert seeded.exit_code == 0, seeded.output
+    fixture = json.loads(seeded.output)
+    assert fixture["fixture"] is True
+    compared = runner.invoke(app, [
+        "--data-dir", str(tmp_path), "graph", "attack-fix",
+        "--entity-id", fixture["entities"]["challenge"],
+    ])
+    assert compared.exit_code == 0, compared.output
+    assert len(json.loads(compared.output)["comparisons"]) >= 2
+
+
+def test_review_submit_missing_target_exits_nonzero(tmp_path):
+    result = CliRunner().invoke(app, [
+        "--data-dir", str(tmp_path), "review", "submit",
+        "--target-type", "entity", "--target-id", "missing-record",
+        "--decision", "rejected", "--note", "not found regression",
+        "--reviewer", "test", "--expected-revision", "1",
+    ])
+    assert result.exit_code == 1
+    assert "target not found" in result.output
+    assert result.output.strip() != "null"

@@ -2,6 +2,8 @@
 
 CTF Knowledge Agent 是一个本地优先的 CTF 资料采集、混合检索与本地 AI 助手。Stage 2 在 Stage 1 的采集、不可变原始快照和 SQLite 版本存储上，增加 Ollama 本地模型、知识抽取、关键词与语义混合检索，以及 OpenAI 兼容聊天 API。模型输出属于 AI 推断，引用可追溯到原文，但不会自动标记为人工验证。
 
+第三阶段增加带证据的 AWDP 图谱、只读多步 Agent、人工审核和中文本地工作台。关系引用不可变文章版本，审核前保持候选状态。没有可用模型时，Agent 返回明确标记的确定性证据报告。管理写入与模型生成使用配置的 bearer token。
+
 ## 安装
 
 需要 Python 3.11 或更新版本。Windows PowerShell：
@@ -108,7 +110,19 @@ sources:
 
 ## API
 
-运行 `ctfka serve` 会在默认地址 `127.0.0.1:8000` 提供 FastAPI 服务。只有在确实需要对局域网开放时才设置 `--host 0.0.0.0`。根页面提供本地项目说明，`/docs` 提供 API 文档。
+运行 `ctfka serve` 会在默认地址 `127.0.0.1:8000` 提供 FastAPI 服务。只有在确实需要对局域网开放时才设置 `--host 0.0.0.0`。根页面提供本地管理工作台，`/docs` 提供 API 文档。
+
+Stage 3 管理界面位于服务根页面 `/`。点击“管理令牌”后，可在当前标签页内存中输入 `config.local.yaml` 中的 token；页面关闭即清除。AWDP 练习夹具只在显式运行 `ctfka demo seed-awdp` 时写入本地数据，可用返回的实体 ID 浏览关系和比较修复方案：
+
+```sh
+ctfka demo seed-awdp
+ctfka graph entities --kind challenge
+ctfka graph attack-fix --entity-id ENTITY_ID
+ctfka review pending
+ctfka agent "比较这个挑战的两种修复方案" --entity-id ENTITY_ID
+```
+
+图谱证据始终指向已保存的文章版本和原文区间。新关系等待人工审核；编辑已审核实体会使其回到未验证状态。Agent 只读取本地资料，不会运行文章、脚本或利用代码。
 
 搜索、文章读取、来源列表、统计、任务状态和健康检查为读取接口。创建来源、开始采集、重试、重建索引和备份需要 `Authorization: Bearer <token>`。未配置 token 时，管理接口会返回 503 并保持关闭。
 
@@ -145,4 +159,4 @@ GitHub 公开仓库可用 README 中的 `writeups-2014` 示例源按相同方式
 
 SQLite 数据库、原始快照、来源状态和持久任务都保存在 `data_dir` 下。备份带有文件哈希清单，恢复前会校验清单并阻止路径穿越。`.gitignore` 已忽略数据库、快照、日志、生成配置、token 和采集输出。
 
-运行 `pytest` 执行离线测试，运行 `ruff check .` 检查代码风格。[第一阶段报告](docs/stage1.md)记录公开来源采集验收；[第二阶段报告](docs/stage2.md)记录本地模型、混合检索、RAG、流式接口及备份恢复实测。
+运行 `pytest` 执行离线测试，运行 `ruff check .` 检查代码风格。[第一阶段报告](docs/stage1.md)记录公开来源采集验收；[第二阶段报告](docs/stage2.md)记录本地模型、混合检索、RAG、流式接口及备份恢复实测；[第三阶段报告](docs/stage3.md)记录 AWDP 图谱、Agent、审核与工作台验收。

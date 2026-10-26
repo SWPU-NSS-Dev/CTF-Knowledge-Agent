@@ -327,7 +327,7 @@ class IndexStorageMixin:
                         db.rollback()
                         raise ValueError("knowledge card references an unknown evidence index")
                     evidence = [all_evidence[index] for index in indices]
-                    db.execute("INSERT INTO knowledge_cards VALUES(?,?,?,?,?,?,?,?,?,?)", (card_id, extraction_id, article_id, version, str(card.get("title") or card.get("direction") or "Knowledge"), str(card.get("content") or card.get("summary") or ""), _json(evidence), card.get("confidence", payload.get("confidence")), "unverified", now))
+                    db.execute("INSERT INTO knowledge_cards(id,extraction_id,article_id,version,title,content,evidence_json,confidence,verification_status,created_at) VALUES(?,?,?,?,?,?,?,?,?,?)", (card_id, extraction_id, article_id, version, str(card.get("title") or card.get("direction") or "Knowledge"), str(card.get("content") or card.get("summary") or ""), _json(evidence), card.get("confidence", payload.get("confidence")), "unverified", now))
             db.commit()
         return {"id": extraction_id, "article_id": article_id, "version": version, "model": model, "model_digest": model_digest, "status": status, "payload": payload, "error": error, "created_at": now}
 

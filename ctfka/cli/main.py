@@ -18,12 +18,18 @@ backup_app = typer.Typer(help="Create or restore store backups", no_args_is_help
 index_app = typer.Typer(help="Build the offline search index", no_args_is_help=True)
 models_app = typer.Typer(help="Inspect local language models", no_args_is_help=True)
 knowledge_app = typer.Typer(help="Inspect extracted knowledge cards", no_args_is_help=True)
+graph_app = typer.Typer(help="Browse the evidence-backed knowledge graph", no_args_is_help=True)
+review_app = typer.Typer(help="Review graph claims and knowledge cards", no_args_is_help=True)
+demo_app = typer.Typer(help="Explicitly load local acceptance fixtures", no_args_is_help=True)
 app.add_typer(sources_app, name="sources")
 app.add_typer(jobs_app, name="jobs")
 app.add_typer(backup_app, name="backup")
 app.add_typer(index_app, name="index")
 app.add_typer(models_app, name="models")
 app.add_typer(knowledge_app, name="knowledge")
+app.add_typer(graph_app, name="graph")
+app.add_typer(review_app, name="review")
+app.add_typer(demo_app, name="demo")
 
 
 def _settings(config: Path | None, data_dir: Path | None) -> Settings:
@@ -285,6 +291,65 @@ def jobs_retry(ctx: typer.Context, job_id: str = typer.Argument(...)) -> None:
     if not success:
         raise typer.BadParameter("Job cannot be retried")
     _json({"retried": True, "job_id": job_id})
+
+
+@graph_app.command("entities")
+def graph_entities(ctx: typer.Context, kind: str | None = typer.Option(None, "--kind"), query: str | None = typer.Option(None, "--query"), limit: int = typer.Option(50, min=1), offset: int = typer.Option(0, min=0)) -> None:
+    _json({"items": Store(ctx.obj.data_dir).list_entities(kind=kind, q=query, limit=limit, offset=offset)})
+
+
+@graph_app.command("relations")
+def graph_relations(ctx: typer.Context, entity_id: str | None = typer.Option(None, "--entity-id"), kind: str | None = typer.Option(None, "--kind"), status: str | None = typer.Option(None, "--status"), limit: int = typer.Option(50, min=1), offset: int = typer.Option(0, min=0)) -> None:
+    _json({"items": Store(ctx.obj.data_dir).list_relations(entity_id=entity_id, kind=kind, status=status, limit=limit, offset=offset)})
+
+
+@graph_app.command("attack-fix")
+def graph_attack_fix(ctx: typer.Context, query: str = typer.Option("", "--query"), entity_id: str | None = typer.Option(None, "--entity-id"), limit: int = typer.Option(20, min=1)) -> None:
+    _json(Store(ctx.obj.data_dir).find_attack_fix(query, entity_id=entity_id, limit=limit))
+
+
+@app.command()
+def agent(ctx: typer.Context, question: str = typer.Argument(...), entity_id: str | None = typer.Option(None, "--entity-id"), model: str | None = typer.Option(None, "--model")) -> None:
+    """Ask the evidence-aware local graph Agent."""
+    from ctfka.agent.service import AgentService
+    from ctfka.llm.ollama import OllamaProvider
+    settings = ctx.obj
+    provider = OllamaProvider(settings.llm)
+    async def run() -> dict[str, Any]:
+        try:
+            return await AgentService(settings, Store(settings.data_dir), provider).answer(question, entity_id=entity_id, model=model)
+        finally:
+            await provider.close()
+    _json(asyncio.run(run()))
+
+
+@review_app.command("pending")
+def review_pending(ctx: typer.Context, limit: int = typer.Option(50, min=1), offset: int = typer.Option(0, min=0)) -> None:
+    _json({"items": Store(ctx.obj.data_dir).pending_reviews(limit=limit, offset=offset)})
+
+
+@review_app.command("submit")
+def review_submit(ctx: typer.Context, target_type: str = typer.Option(..., "--target-type"), target_id: str = typer.Option(..., "--target-id"), decision: str = typer.Option(..., "--decision"), note: str = typer.Option(..., "--note"), reviewer: str = typer.Option(..., "--reviewer"), expected_revision: int = typer.Option(..., "--expected-revision", min=1)) -> None:
+    try:
+        result = Store(ctx.obj.data_dir).review_record(target_type, target_id, decision, note=note, reviewer=reviewer, expected_revision=expected_revision)
+    except Exception as exc:
+        typer.echo(f"Review failed: {type(exc).__name__}: {exc}", err=True)
+        raise typer.Exit(1) from exc
+    if result is None:
+        typer.echo("Review failed: target not found", err=True)
+        raise typer.Exit(1)
+    _json(result)
+
+
+@demo_app.command("seed-awdp")
+def demo_seed_awdp(ctx: typer.Context) -> None:
+    """Explicitly add the labelled local AWDP acceptance fixture."""
+    try:
+        from ctfka.knowledge.fixtures import seed_awdp_fixture
+        _json(seed_awdp_fixture(Store(ctx.obj.data_dir)))
+    except Exception as exc:
+        typer.echo(f"Fixture seed failed: {type(exc).__name__}: {exc}", err=True)
+        raise typer.Exit(1) from exc
 
 
 if __name__ == "__main__":

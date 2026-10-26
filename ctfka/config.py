@@ -51,6 +51,16 @@ class ChunkConfig(BaseModel):
     max_chars: int = Field(default=1800, gt=0)
 
 
+class AgentConfig(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    max_tool_calls: int | None = Field(default=8, gt=0)
+    max_retrieval_results: int = Field(default=8, gt=0)
+    max_context_tokens: int | None = Field(default=12000, gt=0)
+    timeout_seconds: float | None = Field(default=180, gt=0)
+    max_relation_depth: int | None = Field(default=3, gt=0)
+
+
 class SourceConfig(BaseModel):
     model_config = ConfigDict(extra="allow")
 
@@ -77,6 +87,7 @@ class Settings(BaseModel):
     llm: LLMConfig = Field(default_factory=LLMConfig)
     retrieval: RetrievalConfig = Field(default_factory=RetrievalConfig)
     chunking: ChunkConfig = Field(default_factory=ChunkConfig)
+    agent: AgentConfig = Field(default_factory=AgentConfig)
 
     @classmethod
     def load(cls, path: str | Path | None = None) -> Settings:

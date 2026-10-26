@@ -11,6 +11,7 @@ from typing import Any
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 
 from ctfka.config import Settings, SourceConfig
@@ -116,6 +117,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
+        from ctfka.agent.service import AgentService
         from ctfka.indexing.service import IndexService
         from ctfka.llm.ollama import OllamaProvider
         from ctfka.processing.extraction import KnowledgeExtractor
@@ -129,6 +131,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.state.rag_service = RAGService(settings, store, provider)
         app.state.extractor = KnowledgeExtractor(settings, store, provider)
         app.state.index_service = IndexService(settings, store, provider)
+        app.state.agent_service = AgentService(settings, store, provider)
         app.state.crawl_runs = crawl_runs
         store.recover_jobs()
 
@@ -158,7 +161,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             await service.close()
             await provider.close()
 
-    app = FastAPI(title="CTF Knowledge Agent", version="0.2.0", lifespan=lifespan)
+    app = FastAPI(title="CTF Knowledge Agent", version="0.3.0", lifespan=lifespan)
+    app.mount("/assets", StaticFiles(directory=Path(__file__).resolve().parents[1] / "web" / "assets"), name="workbench-assets")
     app.state.settings, app.state.store = settings, store
     app.state.crawl_runs = crawl_runs
     app.state.worker_state = worker_state
@@ -225,10 +229,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/", response_class=HTMLResponse, include_in_schema=False)
     async def home() -> str:
-        return """<!doctype html><meta charset=utf-8><title>CTF Knowledge Agent</title>
-        <h1>CTF Knowledge Agent</h1><p>Local-first source collection, hybrid retrieval and local AI.</p>
-        <p>API: <a href='/docs'>/docs</a> · health: <a href='/health'>/health</a></p>
-        <p>API: <code>/v1/chat/completions</code> · <code>/api/v1/knowledge</code></p>"""
+        from ctfka.web import index_html
+        return index_html()
 
     @app.get("/health")
     async def health() -> dict[str, str]:
@@ -253,6 +255,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         result = store.get_article(article_id)
         if result is None:
             raise HTTPException(status_code=404, detail="Article not found")
+        return result
+
+    @app.get("/api/v1/articles/{article_id}/versions/{version}")
+    def article_version(article_id: str, version: int) -> dict[str, Any]:
+        result = store.get_article_version(article_id, version)
+        if result is None:
+            raise HTTPException(status_code=404, detail="Article version not found")
         return result
 
     @app.get("/api/v1/sources")
@@ -472,4 +481,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 raise HTTPException(status_code=422, detail="Backup destination must be inside data_dir")
         return {"path": store.backup(path)}
 
+    from ctfka.api.stage3 import build_router
+    app.include_router(build_router(admin_auth))
     return app

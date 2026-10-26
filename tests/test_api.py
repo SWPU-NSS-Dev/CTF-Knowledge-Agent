@@ -23,6 +23,18 @@ def test_search_and_admin_auth(tmp_path):
     assert response.status_code == 200
 
 
+def test_article_version_reader_api_returns_historical_content(tmp_path):
+    store = Store(tmp_path)
+    store.register_source("fixture", "html", {})
+    store.ingest("fixture", FetchedDocument("https://example.test/versioned", b"# First\noriginal evidence"))
+    store.ingest("fixture", FetchedDocument("https://example.test/versioned", b"# Second\nupdated evidence"))
+    article = store.list_articles(limit=1)[0]
+    with TestClient(create_app(Settings(data_dir=tmp_path))) as client:
+        first = client.get(f"/api/v1/articles/{article['id']}/versions/1")
+        assert first.status_code == 200
+        assert "original evidence" in first.json()["content"]
+
+
 def test_source_api_rejects_unregistered_adapter(tmp_path):
     client = TestClient(create_app(Settings(data_dir=tmp_path, token="secret")))
     response = client.put(
@@ -78,9 +90,78 @@ def test_chat_admin_auth_fails_closed_and_unsupported_parameters_are_422(tmp_pat
 
 def test_chat_alias_is_registered(tmp_path):
     app = create_app(Settings(data_dir=tmp_path, token="secret"))
-    paths = {route.path for route in app.routes}
+    def route_paths(routes):
+        paths = set()
+        for route in routes:
+            path = getattr(route, "path", None)
+            if path:
+                paths.add(path)
+            nested = getattr(route, "original_router", None)
+            if nested is not None:
+                paths.update(route_paths(nested.routes))
+        return paths
+
+    paths = route_paths(app.routes)
     assert "/v1/chat/completions" in paths
     assert "/api/v1/chat/completions" in paths
+
+
+def test_local_workbench_assets_and_stage3_admin_auth(tmp_path):
+    with TestClient(create_app(Settings(data_dir=tmp_path, token="secret"))) as client:
+        page = client.get("/")
+        assert page.status_code == 200
+        assert 'lang="zh-CN"' in page.text
+        assert "tokenInput" in page.text
+        assert "/assets/workbench.js" in page.text
+        script = client.get("/assets/workbench.js")
+        style = client.get("/assets/workbench.css")
+        assert script.status_code == style.status_code == 200
+        assert "localStorage" not in script.text
+        response = client.post("/api/v1/agent/chat", json={"question": "test"})
+        assert response.status_code == 401
+        headers = {"Authorization": "Bearer secret"}
+        injected_state = client.post("/api/v1/entities", headers=headers, json={
+            "kind": "challenge", "title": "test", "verification_status": "human_verified",
+        })
+        assert injected_state.status_code == 422
+        boolean_revision = client.patch("/api/v1/entities/missing", headers=headers, json={
+            "expected_revision": True, "title": "edited",
+        })
+        assert boolean_revision.status_code == 422
+
+
+def test_stage3_fixture_graph_and_review_http_flow(tmp_path):
+    from ctfka.knowledge.fixtures import seed_awdp_fixture
+
+    store = Store(tmp_path)
+    fixture = seed_awdp_fixture(store)
+    with TestClient(create_app(Settings(data_dir=tmp_path, token="secret"))) as client:
+        headers = {"Authorization": "Bearer secret"}
+        challenge_id = fixture["entities"]["challenge"]
+        challenge = client.get(f"/api/v1/challenges/{challenge_id}")
+        assert challenge.status_code == 200
+        assert len(challenge.json()["graph"]["relations"]) >= 2
+
+        comparison = client.get("/api/v1/attack-fix", params={"entity_id": challenge_id})
+        assert comparison.status_code == 200
+        assert len(comparison.json()["comparisons"]) >= 2
+
+        reviewed = client.post("/api/v1/reviews", headers=headers, json={
+            "target_type": "entity", "target_id": challenge_id,
+            "decision": "rejected", "note": "Fixture review for the API workflow.",
+            "reviewer": "acceptance", "expected_revision": 1,
+        })
+        assert reviewed.status_code == 200
+        assert client.get(f"/api/v1/entities/{challenge_id}").json()["verification_status"] == "rejected"
+        edited = client.patch(f"/api/v1/entities/{challenge_id}", headers=headers, json={
+            "expected_revision": 1, "description": "Reviewed source claim, then edited.",
+        })
+        assert edited.status_code == 200
+        assert edited.json()["revision"] == 2
+        stale = client.patch(f"/api/v1/entities/{challenge_id}", headers=headers, json={
+            "expected_revision": 1, "description": "stale edit",
+        })
+        assert stale.status_code == 409
 
 
 def test_openai_chat_shapes_and_sse_terminal(tmp_path, monkeypatch):
