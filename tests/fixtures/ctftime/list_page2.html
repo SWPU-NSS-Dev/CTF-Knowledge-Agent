@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>CTFtime.org / Writeups</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Capture The Flag, CTF teams, CTF ratings, CTF archive, CTF writeups" name="description"/>
+<meta content="ctftime team" name="author"/>
+<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+<link href="/static/css/typeahead.bootstrap.css" rel="stylesheet"/>
+
+<link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet"/>
+<link href="/favicon.png" rel="icon" type="image/png"/>
+<link href="/static/images/ctftime-logo-avatar.png" rel="apple-touch-icon"/>
+<meta content="CTFtime" name="apple-mobile-web-app-title"/>
+<meta content="CTFtime" name="application-name"/>
+<meta content="IE=9" http-equiv="X-UA-Compatible"/>
+<link href="/favicon.png" rel="shortcut icon" type="image/png"/>
+
+<link href="/static/css/tagmanager.css" rel="stylesheet" type="text/css"/>
+<link href="/static/css/theme.bootstrap_2.css" rel="stylesheet" type="text/css"/>
+
+<link href="/static/css/ctftime6.css" rel="stylesheet"/>
+<link href="/static/css/cookieconsent.min.css" rel="stylesheet" type="text/css"/>
+
+<!--<script data-ad-client="ca-pub-5718474707752821" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container">
+<a class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse">
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</a>
+<a class="brand" href="//ctftime.org/"><img alt="CTFtime.org" border="0" src="/static/images/ct/logo.svg" width="191px"/></a>
+<div class="nav-collapse">
+<ul class="nav">
+<li><a href="/ctfs">CTFs</a></li>
+<li><a href="/event/list/upcoming">Upcoming</a></li>
+<li class="dropdown">
+<a class="dropdown-toggle" data-toggle="dropdown" href="#">Archive  <b class="caret"></b></a>
+<ul class="dropdown-menu">
+<li><a href="/event/list/past">Past events</a></li>
+<li><a href="/tasks/">Tasks</a></li>
+<li><a href="/writeups">Writeups</a></li>
+</ul>
+</li>
+<li><a href="/calendar/">Calendar</a></li>
+<li class="dropdown">
+<a class="dropdown-toggle" data-toggle="dropdown" href="#">Teams  <b class="caret"></b></a>
+<ul class="dropdown-menu">
+<li><a href="/stats/">Rating</a></li>
+<li><a href="/team/compare">Compare</a></li>
+<li><a href="/team/new/">Create new team</a></li>
+<li><a href="/dating">Get team members</a></li>
+</ul>
+</li>
+<li><a href="/faq/">FAQ</a></li>
+<li class="dropdown">
+<a class="dropdown-toggle" data-toggle="dropdown" href="#">Contact us  <b class="caret"></b></a>
+<ul class="dropdown-menu">
+<li><a href="/event/mail">For organizers</a></li>
+<li><a href="/feedback">Feedback</a></li>
+</ul>
+</li>
+<li><a href="/about/">About</a></li>
+</ul>
+<ul class="nav pull-right">
+<li class="divider-vertical"></li>
+<li><a data-toggle="modal" href="#loginModal">Sign in</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<ul class="breadcrumb">
+<li><a href="/">Home</a> <span class="divider">/</span></li>
+<li><a href="/event/list/">CTF events</a> <span class="divider">/</span></li>
+<li class="active">Writeups</li>
+</ul>
+<div class="container">
+<div class="page-header">
+<h2>Writeups <a href="/writeups/rss/"><img class="svg_icon" src="/static/images/icon_rss.svg"/></a></h2>
+</div>
+<div>
+<div class="well">
+<form action="/writeups" id="filter_form" method="get">
+<label>Enter tags:</label><br/>
+<input autocomplete="off" id="id_tags" name="tags" type="text"/>
+<input class="btn btn-primary btn-search1" id="id_submit" type="submit" value="Filter"/>
+</form>
+<span id="tcn">
+</span>
+</div>
+<table class="tablesorter table table-striped" id="writeups_table">
+<thead>
+<tr><th>Event</th><th>Task</th><th>Tags</th><th>Author team</th><th>Action</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="/event/3148">UIUCTF 2026</a></td>
+<td><a href="/task/33008">Young Cryptography</a></td>
+<td>
+<span class="label label-info">cryptography</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">crypto</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41110">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3148">UIUCTF 2026</a></td>
+<td><a href="/task/33016">Nabi AI</a></td>
+<td>
+<span class="label label-info">web</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41109">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3148">UIUCTF 2026</a></td>
+<td><a href="/task/33020">smaller-jail</a></td>
+<td>
+<span class="label label-info">misc</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41108">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3148">UIUCTF 2026</a></td>
+<td><a href="/task/33015">emacsjail2</a></td>
+<td>
+<span class="label label-info">misc</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41107">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3148">UIUCTF 2026</a></td>
+<td><a href="/task/33009">jail</a></td>
+<td>
+<span class="label label-info">misc</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41106">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3342">AEROSPACE VILLAGE STARPWN CTF</a></td>
+<td><a href="/task/33076">Beaconing from Above</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">rf</span>
+<span class="label label-info">starpwnctf</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41105">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3342">AEROSPACE VILLAGE STARPWN CTF</a></td>
+<td><a href="/task/33075">Deadly Parade</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">rf</span>
+<span class="label label-info">starpwnctf</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41104">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3342">AEROSPACE VILLAGE STARPWN CTF</a></td>
+<td><a href="/task/33074">Connect the Dots</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">rf</span>
+<span class="label label-info">starpwnctf</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41103">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3342">AEROSPACE VILLAGE STARPWN CTF</a></td>
+<td><a href="/task/33073">Oversized Downlink</a></td>
+<td>
+<span class="label label-info">misc</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">starpwnctf</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41102">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3342">AEROSPACE VILLAGE STARPWN CTF</a></td>
+<td><a href="/task/33072">Silent Beacon</a></td>
+<td>
+<span class="label label-info">misc</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">starpwnctf</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41101">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3342">AEROSPACE VILLAGE STARPWN CTF</a></td>
+<td><a href="/task/33071">Strange Holos 5</a></td>
+<td>
+<span class="label label-info">misc</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">starpwnctf</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41100">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3342">AEROSPACE VILLAGE STARPWN CTF</a></td>
+<td><a href="/task/33070">Strange Holos 4</a></td>
+<td>
+<span class="label label-info">misc</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">starpwnctf</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41099">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3342">AEROSPACE VILLAGE STARPWN CTF</a></td>
+<td><a href="/task/33069">Strange Holos 3</a></td>
+<td>
+<span class="label label-info">misc</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">startpwnctf</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41098">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3328">Kali Team - CTF 26</a></td>
+<td><a href="/task/33068">Havok</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">osint</span>
+<span class="label label-info">kaliteamctf</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41097">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3328">Kali Team - CTF 26</a></td>
+<td><a href="/task/33067">S1l3nt</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">osint</span>
+<span class="label label-info">kaliteamctf</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41096">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3328">Kali Team - CTF 26</a></td>
+<td><a href="/task/33066">Player</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">pwn</span>
+<span class="label label-info">kaliteamctf</span>
+<span class="label label-info">binary</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41095">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3328">Kali Team - CTF 26</a></td>
+<td><a href="/task/33065">Whispering Feather</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">kaliteamctf</span>
+<span class="label label-info">reverse</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41094">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3328">Kali Team - CTF 26</a></td>
+<td><a href="/task/33064">Merkle’s Trapdoor</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">crypto</span>
+<span class="label label-info">kaliteamctf</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41093">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3328">Kali Team - CTF 26</a></td>
+<td><a href="/task/33063">Robots</a></td>
+<td>
+<span class="label label-info">web</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">kaliteamctf</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41092">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3328">Kali Team - CTF 26</a></td>
+<td><a href="/task/33062">Industry Night</a></td>
+<td>
+<span class="label label-info">web</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">kaliteamctf</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41091">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3061">L3akCTF 2026</a></td>
+<td><a href="/task/33005">Relizane is Down!</a></td>
+<td>
+<span class="label label-info">hard</span>
+<span class="label label-info">forensics</span>
+</td>
+<td><a href="/team/440921">Al-Sinwar</a></td>
+<td><a href="/writeup/41089">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3061">L3akCTF 2026</a></td>
+<td><a href="/task/32967">Blunder</a></td>
+<td>
+<span class="label label-info">misc</span>
+<span class="label label-info">l3akctf</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41088">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3061">L3akCTF 2026</a></td>
+<td><a href="/task/32966">Maze Captcha</a></td>
+<td>
+<span class="label label-info">misc</span>
+<span class="label label-info">l3akctf</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41087">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3061">L3akCTF 2026</a></td>
+<td><a href="/task/32965">Cursed Maze Captcha</a></td>
+<td>
+<span class="label label-info">ctf</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">l3akctf</span>
+<span class="label label-info">misc</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41086">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3061">L3akCTF 2026</a></td>
+<td><a href="/task/32964">RSA Eclipse</a></td>
+<td>
+<span class="label label-info">cryptography</span>
+<span class="label label-info">l3akctf</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">crypto</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41085">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3061">L3akCTF 2026</a></td>
+<td><a href="/task/32963">po1337nomial-revenge</a></td>
+<td>
+<span class="label label-info">cryptography</span>
+<span class="label label-info">l3akctf</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">crypto</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41084">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3061">L3akCTF 2026</a></td>
+<td><a href="/task/32962">Isaac's Kaleidoscope</a></td>
+<td>
+<span class="label label-info">cryptography</span>
+<span class="label label-info">l3akctf</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">crypto</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41083">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3061">L3akCTF 2026</a></td>
+<td><a href="/task/32961">A Fine Product</a></td>
+<td>
+<span class="label label-info">cryptography</span>
+<span class="label label-info">l3akctf</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">crypto</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41082">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3061">L3akCTF 2026</a></td>
+<td><a href="/task/32960">1+1=3</a></td>
+<td>
+<span class="label label-info">cryptography</span>
+<span class="label label-info">l3akctf</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">crypto</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41081">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3061">L3akCTF 2026</a></td>
+<td><a href="/task/32959">Immiscible</a></td>
+<td>
+<span class="label label-info">cryptography</span>
+<span class="label label-info">l3akctf</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">crypto</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41080">Read</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="container">
+<ul class="pagination pagination-sm">
+<li><a class="prev" href="?page=1">‹‹ Prev</a></li>
+<li class="current page active"><a href="#">2</a></li>
+<li><a class="page" href="/writeups?page=3">3</a></li>
+<li><a class="page" href="/writeups?page=4">4</a></li>
+<li><a class="page" href="/writeups?page=5">5</a></li>
+<li><a class="page" href="/writeups?page=6">6</a></li>
+<li><a class="page" href="/writeups?page=7">7</a></li>
+<li class="disabled prev"><a href="#">...</a></li>
+<li><a class="next" href="?page=3">Next ››</a></li>
+</ul>
+</div>
+<div class="modal hide fade" id="loginModal">
+<div class="modal-header">
+<button class="close" data-dismiss="modal">x</button>
+<h3>Sign in with</h3>
+</div>
+<div align="center" class="modal-body">
+<a href="/login/google-oauth2/?next=/writeups"><img alt="Enter using Google" class="icon_logon" src="/static/images/google.svg"/></a>
+<a href="/login/twitter/?next=/writeups"><img alt="Enter using Twitter" class="icon_logon" src="/static/images/twitter.svg"/></a>
+<a href="/login/facebook/?next=/writeups"><img alt="Enter using Facebook" class="icon_logon" src="/static/images/facebook.svg"/></a>
+<a href="/login/github/?next=/writeups"><img alt="Enter using Github" class="icon_logon" src="/static/images/github.svg"/></a>
+<p><a href="/amnesia">I don't remember</a></p>
+</div>
+</div>
+<div class="row">
+<div class="span4">
+</div>
+</div>
+</div>
+<footer class="footer">
+<div class="container">
+<p class="pull-right"><a class="twitter-follow-button" data-show-count="false" href="//twitter.com/CTFtime">Follow @CTFtime</a> </p>
+<p>© 2012 — 2026 CTFtime team.</p><p>All tasks and writeups are copyrighted by their respective authors. <a href="/privacy">Privacy Policy</a>.<br/>
+    Hosting provided by <a href="http://www.transdata.no/">Transdata</a>.</p>
+</div>
+</footer>
+
+<!--    <script src="/static/bootstrap/js/bootstrap-scrollspy.js"></script>-->
+
+<!--    <script src="/static/bootstrap/js/bootstrap-carousel.js"></script>-->
+
+<!-- Yandex.Metrika counter -->
+
+<!-- /Yandex.Metrika counter -->
+
+</body>
+</html>

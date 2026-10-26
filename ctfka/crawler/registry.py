@@ -13,6 +13,12 @@ BUILTINS = {
     "github": "ctfka.crawler.sources.github:GitHubAdapter",
     "html": "ctfka.crawler.sources.html:HTMLAdapter",
     "rss": "ctfka.crawler.sources.rss:RSSAdapter",
+    "sitemap": "ctfka.crawler.sources.sitemap:SitemapAdapter",
+    "ctftime": "ctfka.crawler.sources.ctftime:CTFtimeAdapter",
+    "anquanke": "ctfka.crawler.sources.anquanke:AnquankeAdapter",
+    "kanxue": "ctfka.crawler.sources.kanxue:KanxueAdapter",
+    "exploitdb": "ctfka.crawler.sources.exploitdb:ExploitDBAdapter",
+    "hacktricks": "ctfka.crawler.sources.hacktricks:HackTricksAdapter",
 }
 
 

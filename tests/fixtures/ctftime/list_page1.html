@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>CTFtime.org / Writeups</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Capture The Flag, CTF teams, CTF ratings, CTF archive, CTF writeups" name="description"/>
+<meta content="ctftime team" name="author"/>
+<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+<link href="/static/css/typeahead.bootstrap.css" rel="stylesheet"/>
+
+<link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet"/>
+<link href="/favicon.png" rel="icon" type="image/png"/>
+<link href="/static/images/ctftime-logo-avatar.png" rel="apple-touch-icon"/>
+<meta content="CTFtime" name="apple-mobile-web-app-title"/>
+<meta content="CTFtime" name="application-name"/>
+<meta content="IE=9" http-equiv="X-UA-Compatible"/>
+<link href="/favicon.png" rel="shortcut icon" type="image/png"/>
+
+<link href="/static/css/tagmanager.css" rel="stylesheet" type="text/css"/>
+<link href="/static/css/theme.bootstrap_2.css" rel="stylesheet" type="text/css"/>
+
+<link href="/static/css/ctftime6.css" rel="stylesheet"/>
+<link href="/static/css/cookieconsent.min.css" rel="stylesheet" type="text/css"/>
+
+<!--<script data-ad-client="ca-pub-5718474707752821" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container">
+<a class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse">
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</a>
+<a class="brand" href="//ctftime.org/"><img alt="CTFtime.org" border="0" src="/static/images/ct/logo.svg" width="191px"/></a>
+<div class="nav-collapse">
+<ul class="nav">
+<li><a href="/ctfs">CTFs</a></li>
+<li><a href="/event/list/upcoming">Upcoming</a></li>
+<li class="dropdown">
+<a class="dropdown-toggle" data-toggle="dropdown" href="#">Archive  <b class="caret"></b></a>
+<ul class="dropdown-menu">
+<li><a href="/event/list/past">Past events</a></li>
+<li><a href="/tasks/">Tasks</a></li>
+<li><a href="/writeups">Writeups</a></li>
+</ul>
+</li>
+<li><a href="/calendar/">Calendar</a></li>
+<li class="dropdown">
+<a class="dropdown-toggle" data-toggle="dropdown" href="#">Teams  <b class="caret"></b></a>
+<ul class="dropdown-menu">
+<li><a href="/stats/">Rating</a></li>
+<li><a href="/team/compare">Compare</a></li>
+<li><a href="/team/new/">Create new team</a></li>
+<li><a href="/dating">Get team members</a></li>
+</ul>
+</li>
+<li><a href="/faq/">FAQ</a></li>
+<li class="dropdown">
+<a class="dropdown-toggle" data-toggle="dropdown" href="#">Contact us  <b class="caret"></b></a>
+<ul class="dropdown-menu">
+<li><a href="/event/mail">For organizers</a></li>
+<li><a href="/feedback">Feedback</a></li>
+</ul>
+</li>
+<li><a href="/about/">About</a></li>
+</ul>
+<ul class="nav pull-right">
+<li class="divider-vertical"></li>
+<li><a data-toggle="modal" href="#loginModal">Sign in</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<ul class="breadcrumb">
+<li><a href="/">Home</a> <span class="divider">/</span></li>
+<li><a href="/event/list/">CTF events</a> <span class="divider">/</span></li>
+<li class="active">Writeups</li>
+</ul>
+<div class="container">
+<div class="page-header">
+<h2>Writeups <a href="/writeups/rss/"><img class="svg_icon" src="/static/images/icon_rss.svg"/></a></h2>
+</div>
+<div>
+<div class="well">
+<form action="/writeups" id="filter_form" method="get">
+<label>Enter tags:</label><br/>
+<input autocomplete="off" id="id_tags" name="tags" type="text"/>
+<input class="btn btn-primary btn-search1" id="id_submit" type="submit" value="Filter"/>
+</form>
+<span id="tcn">
+</span>
+</div>
+<table class="tablesorter table table-striped" id="writeups_table">
+<thead>
+<tr><th>Event</th><th>Task</th><th>Tags</th><th>Author team</th><th>Action</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="/event/3117">JerseyCTF VI</a></td>
+<td><a href="/task/32180">Relay Artifact TX-7</a></td>
+<td>
+<span class="label label-info">cryptography</span>
+<span class="label label-info">gcd</span>
+<span class="label label-info">rsa</span>
+</td>
+<td><a href="/team/439">NYUSEC</a></td>
+<td><a href="/writeup/41140">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3117">JerseyCTF VI</a></td>
+<td><a href="/task/32148">qaStaH nuq</a></td>
+<td>
+<span class="label label-info">pcap</span>
+<span class="label label-info">base64</span>
+<span class="label label-info">forensics</span>
+<span class="label label-info">wireshark</span>
+<span class="label label-info">http</span>
+</td>
+<td><a href="/team/439">NYUSEC</a></td>
+<td><a href="/writeup/41139">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3117">JerseyCTF VI</a></td>
+<td><a href="/task/32149">Recovered Signal File </a></td>
+<td>
+<span class="label label-info">caesar-cipher</span>
+<span class="label label-info">base64</span>
+<span class="label label-info">forensics</span>
+</td>
+<td><a href="/team/439">NYUSEC</a></td>
+<td><a href="/writeup/41138">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3117">JerseyCTF VI</a></td>
+<td><a href="/task/32147">Fix Your Ship</a></td>
+<td>
+<span class="label label-info">mp4</span>
+<span class="label label-info">hex-editing</span>
+<span class="label label-info">file-repair</span>
+<span class="label label-info">forensics</span>
+<span class="label label-info">magic-bytes</span>
+<span class="label label-info">jpeg</span>
+<span class="label label-info">png</span>
+</td>
+<td><a href="/team/439">NYUSEC</a></td>
+<td><a href="/writeup/41137">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3446">KubSTU CTF</a></td>
+<td><a href="/task/33446">HellDriver</a></td>
+<td>
+</td>
+<td><a href="/team/381071">GR3B0M4</a></td>
+<td><a href="/writeup/41136">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3446">KubSTU CTF</a></td>
+<td><a href="/task/33480">[Beginner] Mobile Waf 2</a></td>
+<td>
+</td>
+<td><a href="/team/447741">mpei_larpers</a></td>
+<td><a href="/writeup/41135">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3446">KubSTU CTF</a></td>
+<td><a href="/task/33479">[Beginner] Matryoshka</a></td>
+<td>
+</td>
+<td><a href="/team/447741">mpei_larpers</a></td>
+<td><a href="/writeup/41134">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3446">KubSTU CTF</a></td>
+<td><a href="/task/33478">[Beginner] Honeyleaf</a></td>
+<td>
+</td>
+<td><a href="/team/447741">mpei_larpers</a></td>
+<td><a href="/writeup/41133">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3446">KubSTU CTF</a></td>
+<td><a href="/task/33477">[Beginner] Gridlock</a></td>
+<td>
+</td>
+<td><a href="/team/447741">mpei_larpers</a></td>
+<td><a href="/writeup/41132">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3446">KubSTU CTF</a></td>
+<td><a href="/task/33476">[Beginner] Clearline</a></td>
+<td>
+</td>
+<td><a href="/team/447741">mpei_larpers</a></td>
+<td><a href="/writeup/41131">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3446">KubSTU CTF</a></td>
+<td><a href="/task/33456">madk1dify</a></td>
+<td>
+</td>
+<td><a href="/team/447741">mpei_larpers</a></td>
+<td><a href="/writeup/41130">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3446">KubSTU CTF</a></td>
+<td><a href="/task/33469">[STEGO]  Subway 2</a></td>
+<td>
+</td>
+<td><a href="/team/447741">mpei_larpers</a></td>
+<td><a href="/writeup/41129">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3446">KubSTU CTF</a></td>
+<td><a href="/task/33458">RISC-V.</a></td>
+<td>
+</td>
+<td><a href="/team/447741">mpei_larpers</a></td>
+<td><a href="/writeup/41128">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3446">KubSTU CTF</a></td>
+<td><a href="/task/33457">Ouroboros</a></td>
+<td>
+</td>
+<td><a href="/team/447741">mpei_larpers</a></td>
+<td><a href="/writeup/41127">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3446">KubSTU CTF</a></td>
+<td><a href="/task/33459">WEB-3 Casino</a></td>
+<td>
+</td>
+<td><a href="/team/447741">mpei_larpers</a></td>
+<td><a href="/writeup/41126">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3446">KubSTU CTF</a></td>
+<td><a href="/task/33494">[Bounty] The Eyes of the Ranger</a></td>
+<td>
+</td>
+<td><a href="/team/447741">mpei_larpers</a></td>
+<td><a href="/writeup/41125">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3446">KubSTU CTF</a></td>
+<td><a href="/task/33486">Bday party</a></td>
+<td>
+</td>
+<td><a href="/team/447741">mpei_larpers</a></td>
+<td><a href="/writeup/41124">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3446">KubSTU CTF</a></td>
+<td><a href="/task/33439">The Deterministic Fog</a></td>
+<td>
+</td>
+<td><a href="/team/447741">mpei_larpers</a></td>
+<td><a href="/writeup/41123">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3312">FAUST CTF 2026</a></td>
+<td><a href="/task/33321">Interstellar Mission Control</a></td>
+<td>
+<span class="label label-info">sqlite</span>
+</td>
+<td><a href="/team/449998">qiyu</a></td>
+<td><a href="/writeup/41122">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3052">scriptCTF 2026</a></td>
+<td><a href="/task/33259">F**K</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">reverseengineering</span>
+<span class="label label-info">reverse</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41121">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3052">scriptCTF 2026</a></td>
+<td><a href="/task/33258">Misdirection</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">crypto</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41120">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3148">UIUCTF 2026</a></td>
+<td><a href="/task/33021">Sparxie: Vanishing Encore</a></td>
+<td>
+<span class="label label-info">ctf</span>
+<span class="label label-info">pwn</span>
+<span class="label label-info">exploitation</span>
+<span class="label label-info">binary</span>
+<span class="label label-info">exploit</span>
+<span class="label label-info">binaryexploitation</span>
+<span class="label label-info">writeup</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41119">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3148">UIUCTF 2026</a></td>
+<td><a href="/task/33018">Firefly: Complete Combustion</a></td>
+<td>
+<span class="label label-info">ctf</span>
+<span class="label label-info">pwn</span>
+<span class="label label-info">exploitation</span>
+<span class="label label-info">exploit</span>
+<span class="label label-info">binaryexploitation</span>
+<span class="label label-info">writeup</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41118">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3148">UIUCTF 2026</a></td>
+<td><a href="/task/33028">Something Handmade</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">osint</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41117">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3148">UIUCTF 2026</a></td>
+<td><a href="/task/33023">glyphs</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">reverseengineering</span>
+<span class="label label-info">reverse</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41116">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3148">UIUCTF 2026</a></td>
+<td><a href="/task/33019">Veil of Evernight</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">reverseengineering</span>
+<span class="label label-info">reverse</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41115">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3148">UIUCTF 2026</a></td>
+<td><a href="/task/33017">GODMODE//999</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">reverseengineering</span>
+<span class="label label-info">reverse</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41114">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3148">UIUCTF 2026</a></td>
+<td><a href="/task/33010">vector-cache</a></td>
+<td>
+<span class="label label-info">writeup</span>
+<span class="label label-info">reverseengineering</span>
+<span class="label label-info">reverse</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41113">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3148">UIUCTF 2026</a></td>
+<td><a href="/task/33022">Rune Decryptor</a></td>
+<td>
+<span class="label label-info">cryptography</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">crypto</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41112">Read</a></td>
+</tr>
+<tr>
+<td><a href="/event/3148">UIUCTF 2026</a></td>
+<td><a href="/task/33014">positive-thinking</a></td>
+<td>
+<span class="label label-info">cryptography</span>
+<span class="label label-info">writeup</span>
+<span class="label label-info">crypto</span>
+<span class="label label-info">ctf</span>
+</td>
+<td><a href="/team/33155">Abdelkader</a></td>
+<td><a href="/writeup/41111">Read</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="container">
+<ul class="pagination pagination-sm">
+<li class="disabled prev"><a href="#">‹‹ Prev</a></li>
+<li class="current page active"><a href="#">1</a></li>
+<li><a class="page" href="/writeups?page=2">2</a></li>
+<li><a class="page" href="/writeups?page=3">3</a></li>
+<li><a class="page" href="/writeups?page=4">4</a></li>
+<li><a class="page" href="/writeups?page=5">5</a></li>
+<li><a class="page" href="/writeups?page=6">6</a></li>
+<li class="disabled prev"><a href="#">...</a></li>
+<li><a class="next" href="?page=2">Next ››</a></li>
+</ul>
+</div>
+<div class="modal hide fade" id="loginModal">
+<div class="modal-header">
+<button class="close" data-dismiss="modal">x</button>
+<h3>Sign in with</h3>
+</div>
+<div align="center" class="modal-body">
+<a href="/login/google-oauth2/?next=/writeups"><img alt="Enter using Google" class="icon_logon" src="/static/images/google.svg"/></a>
+<a href="/login/twitter/?next=/writeups"><img alt="Enter using Twitter" class="icon_logon" src="/static/images/twitter.svg"/></a>
+<a href="/login/facebook/?next=/writeups"><img alt="Enter using Facebook" class="icon_logon" src="/static/images/facebook.svg"/></a>
+<a href="/login/github/?next=/writeups"><img alt="Enter using Github" class="icon_logon" src="/static/images/github.svg"/></a>
+<p><a href="/amnesia">I don't remember</a></p>
+</div>
+</div>
+<div class="row">
+<div class="span4">
+</div>
+</div>
+</div>
+<footer class="footer">
+<div class="container">
+<p class="pull-right"><a class="twitter-follow-button" data-show-count="false" href="//twitter.com/CTFtime">Follow @CTFtime</a> </p>
+<p>© 2012 — 2026 CTFtime team.</p><p>All tasks and writeups are copyrighted by their respective authors. <a href="/privacy">Privacy Policy</a>.<br/>
+    Hosting provided by <a href="http://www.transdata.no/">Transdata</a>.</p>
+</div>
+</footer>
+
+<!--    <script src="/static/bootstrap/js/bootstrap-scrollspy.js"></script>-->
+
+<!--    <script src="/static/bootstrap/js/bootstrap-carousel.js"></script>-->
+
+<!-- Yandex.Metrika counter -->
+
+<!-- /Yandex.Metrika counter -->
+
+</body>
+</html>
