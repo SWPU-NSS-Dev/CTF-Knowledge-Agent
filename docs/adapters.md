@@ -20,6 +20,32 @@ HTML 网站可先使用 `html` 并配置 `options.start_urls`；RSS / Atom 使�
 
 通用 `html` 适配器对上面这些站点的正文提取不完整（例如 HackTricks 的 `<main>` 外壳几乎不含正文、CTFtime 会把导航栏算进正文），因此这些站点各自实现了 `parse`，只复用 `FetchClient` 和通用解析辅助函数。
 
+### `sitemap`：通用 sitemap 发现
+
+站点没有可翻页列表、只公开 `sitemap.xml` 时，先用这个通用适配器，不必为此新写模块。它只负责**发现**，正文交给共享解析器：
+
+```yaml
+sources:
+  some-docs:
+    adapter: sitemap
+    enabled: true
+    options:
+      sitemap_urls:
+        - https://docs.example.org/sitemap.xml
+      # include_regex: ["/posts/"]      # 可选：只保留匹配的 URL
+      # exclude_regex: ["/2025/"]       # 可选：排除匹配的 URL
+```
+
+行为说明：
+
+- 入口可以是 `sitemapindex` 或 `urlset`，索引里的子 sitemap 会自动跟进；子 sitemap 必须与入口同源，跨源默认跳过（`allow_cross_origin_sitemaps: true` 可放开）。
+- 增量游标按子 sitemap 记录 `<lastmod>` 水位：水位以下的条目不再重复交给队列，被编辑后 `lastmod` 变新的条目会重新出现。水位只在子 sitemap 被完整读到末尾后推进。
+- 没有可用 `<lastmod>` 的条目每一轮都会重新出现，靠 `Store` 的 identity 幂等去重，因此不会丢内容、也不会产生重复文章。
+- `max_items` 截断时记录 `resume_url` / `resume_index`，下一轮从同个子 sitemap 的断点继续，并如实报告 `complete: false`。
+- 子 sitemap 返回 404/410 视为已下线并跳过；其余传输错误照常向上抛出，交给 worker 的重试分类处理。
+- `<loc>` 会先去除 `#fragment` 再入库，保证同一篇文章的 identity 稳定。
+- 正文若需要站点专用选择器（例如 mdBook 的 `#content main`），仍应为该站点单独实现适配器，只把发现逻辑留给本适配器。
+
 ### 可直接复制的来源配置
 
 ```yaml

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://docs.example.org/sitemap-posts-1.xml</loc>
+    <lastmod>2026-10-26T14:54:01+08:00</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://docs.example.org/sitemap-pages.xml</loc>
+    <lastmod>2026-10-20T08:00:00Z</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://docs.example.org/sitemap-posts-2.xml</loc>
+    <lastmod>2026-10-24T13:37:00+08:00</lastmod>
+  </sitemap>
+</sitemapindex>
