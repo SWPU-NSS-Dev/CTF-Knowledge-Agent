@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://docs.example.org/posts/2026/stack-overflow-primer</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+    <lastmod>2026-10-26T14:54:01+08:00</lastmod>
+  </url>
+  <url>
+    <loc>https://docs.example.org/posts/2026/format-string-basics</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1</priority>
+    <lastmod>2026-10-26T14:47:16+08:00</lastmod>
+  </url>
+  <url>
+    <loc>https://docs.example.org/posts/2026/heap-notes#allocator</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-10-25T09:00:00Z</lastmod>
+  </url>
+  <url>
+    <loc>https://docs.example.org/posts/2025/older-but-valid</loc>
+    <lastmod>2025-12-31</lastmod>
+  </url>
+  <url>
+    <loc>https://docs.example.org/posts/2026/no-lastmod-entry</loc>
+  </url>
+</urlset>

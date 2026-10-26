@@ -90,7 +90,7 @@ All checks passed!
 
 ### 遗留问题 / 后续注意
 
-- **未实现**：upstream 的 `sitemap` 适配器与 `tests/test_sitemap_adapter.py` 属于其他 agent 的在途改动，本轮未纳入提交。
+- ~~**未实现**：upstream 的 `sitemap` 适配器与 `tests/test_sitemap_adapter.py` 属于其他 agent 的在途改动，本轮未纳入提交。~~ → **已在轮次 2 补齐**，见下。
 - **未实现适配器的站点**：奇安信攻防社区（需登录）、先知社区 xz.aliyun.com（文章页有阿里云 WAF 的 JS 挑战，未做绕过）、安全客的 RSS 未发布。
 - **看雪加密链接**：`mark.encrypted` 是站方跳转保护混淆串，适配器原样保留在 `text` 代码块中，**不执行**站方解码脚本。
 - **exploitdb** 的 JSON 接口对部分排序参数返回 500，只用默认顺序（最旧在前）+ 从高位 offset 回溯。
@@ -139,3 +139,79 @@ PR #1 的 CI 显示 failure，但**不是代码问题**：
 
 因此本 PR 的验收依据是本地实测（163 passed、ruff 全通过、真实线上采集 15 篇入库），
 不是 CI。若后续账号/额度恢复，重跑该 workflow 即可。
+
+---
+
+## 轮次 3 — 2026-10-26（补齐 `sitemap`，修复 PR #1 的导入断链）
+
+**分支**：`feat/sitemap-adapter`（基于 `feat/sources-ctf-writeups` @ `848646c`）
+**角色**：新网站来源（`ctfka/crawler/sources/`），按 `CONTRIBUTING.md` 的模块边界
+
+### 起因：PR #1 的代码树无法导入
+
+上一轮把 `sitemap` 注册进了 `registry.py` 的 `BUILTINS` 和 `builtin.py` 的再导出，
+但 `sitemap.py` 一直留在其他 agent 的在途改动里（轮次 2 第 116–117 行记录了“保持未暂存”）。
+结果是 PR 分支上：
+
+```
+ctfka/crawler/builtin.py:12: from ctfka.crawler.sources.sitemap import SitemapAdapter
+E   ModuleNotFoundError: No module named 'ctfka.crawler.sources.sitemap'
+```
+
+影响不止少一个适配器：`tests/test_crawler.py` 在**收集阶段**就报错，pytest 直接中断，
+整条测试套件跑不起来。所以 PR #1 声称的 “163 passed” 与它自己的代码树不符——
+那是带 `sitemap.py` 的本地状态，文件没有提交。`docs/adapters.md` 也已经把这个还不存在的
+适配器写进了配置示例。
+
+### 本轮交付
+
+```
+新增  ctfka/crawler/sources/sitemap.py        # 通用 sitemap 发现适配器
+新增  tests/test_source_sitemap.py            # 18 项离线测试
+新增  tests/fixtures/sitemap/sitemap_index.xml
+新增  tests/fixtures/sitemap/sitemap_posts_1.xml
+新增  tests/fixtures/sitemap/sitemap_posts_2.xml
+新增  tests/fixtures/sitemap/sitemap_pages.xml
+改动  docs/adapters.md                        # 补 sitemap 用法与行为说明
+改动  dsh-readme.md                           # 本记录
+```
+
+只做**发现**，正文走共享解析器。要点：
+
+- `sitemapindex` → 子 `urlset` 自动跟进；子 sitemap 默认必须同源（`allow_cross_origin_sitemaps` 可放开）。
+- 增量按子 sitemap 的 `<lastmod>` 水位 + 同水位 URL 集合，跨轮重新读取子 sitemap，被编辑的条目会重新出现。
+- 水位**只在该子 sitemap 被完整读到末尾后**推进；`max_items` 截断时改记 `resume_url`/`resume_index`，如实报告 `complete: false`。
+- 无可用 `<lastmod>` 的条目每轮都重新出现，靠 `Store` identity 幂等去重（不会丢，也不会重复入库）。
+- 子 sitemap 404/410 视为下线并跳过；其余传输错误照常抛给 worker 分类重试。
+- `<loc>` 先 `urldefrag` 再入库，identity 用去 fragment 的 URL。
+- **没有**声明 `complete_scan`：列表型适配器一旦带上它，worker 会把 `current_identities` 之外的已存文章全部归档。
+
+### 验证结果（本轮实测）
+
+```powershell
+$ python -m pytest tests/test_source_sitemap.py -q
+18 passed in 0.38s
+
+$ python -m pytest -q
+179 passed in 19.57s          # 含 PR #1 原有 161 项，收集不再中断
+
+$ python -m ruff check .
+All checks passed!
+
+$ node --check ctfka/web/assets/workbench.js
+JS OK
+```
+
+### 写测试时修正的三个认知错误
+
+初版断言是错的，跑出来的差异都指向“我理解错了契约”，不是实现有问题：
+
+1. 以为水位以下的条目一律不再出现 → 实际**无 `lastmod`/`lastmod` 不可解析的条目每轮都会重新出现**（设计如此，靠幂等兜底）。
+2. 以为截断前后的两轮拼接起来等于完整列表 → 跨子 sitemap 的去重是**按轮次**的，`stack-overflow-primer` 在第二轮会再出现一次；正确断言是“覆盖集合完整”，而非“拼接序列相等”。
+3. `DiscoveredItem` 带 `slots` 且不可哈希 → 只能对 `item.url` 做集合运算。
+
+### 遗留
+
+- 未做真实公网 sitemap 采集实测：本轮只交付离线 fixture 回归，没有声称线上结果。
+- 上一轮 `dsh-readme.md` 里的线上采集数据（15 篇入库、耗时表）属于**轮次 1 的历史记录**，
+  本轮没有复现，不作为本 PR 的验收依据。
