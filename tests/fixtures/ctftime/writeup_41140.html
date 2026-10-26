@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>CTFtime.org / JerseyCTF VI / Relay Artifact TX-7 / Writeup</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="CTF writeups, Relay Artifact TX-7" name="description"/>
+<meta content="ctftime team" name="author"/>
+<link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+<link href="/static/css/typeahead.bootstrap.css" rel="stylesheet"/>
+
+<link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet"/>
+<link href="/favicon.png" rel="icon" type="image/png"/>
+<link href="/static/images/ctftime-logo-avatar.png" rel="apple-touch-icon"/>
+<meta content="CTFtime" name="apple-mobile-web-app-title"/>
+<meta content="CTFtime" name="application-name"/>
+<meta content="IE=9" http-equiv="X-UA-Compatible"/>
+<link href="/favicon.png" rel="shortcut icon" type="image/png"/>
+
+<link href="/static/css/highlight.min.css" rel="stylesheet" type="text/css"/>
+
+<!--<script src="/static/js/remarkable.min.js"></script>-->
+
+<!--<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>-->
+
+<link href="/static/css/ctftime6.css" rel="stylesheet"/>
+<link href="/static/css/cookieconsent.min.css" rel="stylesheet" type="text/css"/>
+
+<!--<script data-ad-client="ca-pub-5718474707752821" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner">
+<div class="container">
+<a class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse">
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</a>
+<a class="brand" href="//ctftime.org/"><img alt="CTFtime.org" border="0" src="/static/images/ct/logo.svg" width="191px"/></a>
+<div class="nav-collapse">
+<ul class="nav">
+<li><a href="/ctfs">CTFs</a></li>
+<li><a href="/event/list/upcoming">Upcoming</a></li>
+<li class="dropdown">
+<a class="dropdown-toggle" data-toggle="dropdown" href="#">Archive  <b class="caret"></b></a>
+<ul class="dropdown-menu">
+<li><a href="/event/list/past">Past events</a></li>
+<li><a href="/tasks/">Tasks</a></li>
+<li><a href="/writeups">Writeups</a></li>
+</ul>
+</li>
+<li><a href="/calendar/">Calendar</a></li>
+<li class="dropdown">
+<a class="dropdown-toggle" data-toggle="dropdown" href="#">Teams  <b class="caret"></b></a>
+<ul class="dropdown-menu">
+<li><a href="/stats/">Rating</a></li>
+<li><a href="/team/compare">Compare</a></li>
+<li><a href="/team/new/">Create new team</a></li>
+<li><a href="/dating">Get team members</a></li>
+</ul>
+</li>
+<li><a href="/faq/">FAQ</a></li>
+<li class="dropdown">
+<a class="dropdown-toggle" data-toggle="dropdown" href="#">Contact us  <b class="caret"></b></a>
+<ul class="dropdown-menu">
+<li><a href="/event/mail">For organizers</a></li>
+<li><a href="/feedback">Feedback</a></li>
+</ul>
+</li>
+<li><a href="/about/">About</a></li>
+</ul>
+<ul class="nav pull-right">
+<li class="divider-vertical"></li>
+<li><a data-toggle="modal" href="#loginModal">Sign in</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<ul class="breadcrumb">
+<li><a href="/">Home</a> <span class="divider">/</span></li>
+<li><a href="/event/list/">CTF events</a> <span class="divider">/</span></li>
+<li><a href="/event/3117">JerseyCTF VI</a> <span class="divider">/</span></li>
+<li><a href="/event/3117/tasks/">Tasks</a></li> <span class="divider">/</span>
+<li><a href="/task/32180">Relay Artifact TX-7</a> <span class="divider">/</span></li>
+<li class="active">Writeup</li>
+</ul>
+<div class="container">
+<div class="page-header">
+<h2>Relay Artifact TX-7</h2>
+by <a href="/user/258451">danielpeng</a> / <a href="/team/439">NYUSEC</a>
+</div>
+<div class="row">
+<div class="span7">
+<p>
+<b>Tags:</b> <span class="label label-info">cryptography</span> <span class="label label-info">gcd</span> <span class="label label-info">rsa</span> 
+</p>
+<p>Rating: <span class="category-value" id="user_rating">5.0</span></p>
+</div>
+<div class="span4">
+</div>
+<div>
+</div>
+</div>
+<div>
+<!-- markdown parser here -->
+<div class="well" id="id_description">
+<p># Relay Artifact TX-7</p>
+<p>The challenge provides a ZIP containing a relay public key, a diagnostic snapshot, and an encrypted transmission fragment. The relay’s notes mention that a prime was reused during key generation. That points to a shared factor between the RSA modulus and the diagnostic value.</p>
+<p>The public key in `relay_pub.pem` gives us the modulus `n` and exponent `e`. The `relay_fingerprint` in `relay_diag.json` is a hexadecimal integer. Taking its greatest common divisor with `n` reveals one of the private primes:</p>
+<p>```python<br/>p = gcd(n, relay_fingerprint)<br/>q = n // p<br/>```</p>
+<p>Once we have both primes, we can reconstruct the private exponent and decrypt `tx_fragment.bin`. This script reads the files directly from the original ZIP:</p>
+<p>```python<br/>import json<br/>from math import gcd<br/>from zipfile import ZipFile</p>
+<p>from cryptography.hazmat.primitives import serialization</p>
+<p>with ZipFile("03-relay-artifact-tx-7.zip") as archive:<br/>    diagnostic = json.loads(archive.read("relay_diag.json"))<br/>    fingerprint = int(diagnostic["relay_fingerprint"], 16)</p>
+<p>    public_key = serialization.load_pem_public_key(<br/>        archive.read("relay_pub.pem")<br/>    )<br/>    numbers = public_key.public_numbers()<br/>    n, e = numbers.n, numbers.e</p>
+<p>    p = gcd(n, fingerprint)<br/>    assert 1 &lt; p &lt; n<br/>    q = n // p</p>
+<p>    phi = (p - 1) * (q - 1)<br/>    d = pow(e, -1, phi)</p>
+<p>    ciphertext = int.from_bytes(<br/>        archive.read("tx_fragment.bin"), "big"<br/>    )<br/>    message = pow(ciphertext, d, n)<br/>    block = message.to_bytes((n.bit_length() + 7) // 8, "big")</p>
+<p>    # Remove the PKCS#1 v1.5 encryption padding.<br/>    assert block.startswith(b"\x00\x02")<br/>    plaintext = block[2:].split(b"\x00", 1)[1]<br/>    print(plaintext.decode())<br/>```</p>
+<p>The decrypted transmission says:</p>
+<p>```text<br/>Relay Transmission — UNSENT</p>
+<p>The restraint was not ordered.<br/>It was negotiated.</p>
+<p>Direct control provokes resistance.<br/>Indirect action is tolerated.</p>
+<p>Partial restoration maintained system stability.</p>
+<p>Do not restore everything.</p>
+<p>JCTF{INDIRECT_CONTROL_IS_THE_ONLY_CONTROL}<br/>```</p>
+<p>The failure is the reused prime: a single GCD calculation factors the RSA modulus and makes the withheld message readable.</p>
+</div>
+<div class="well"><a href="https://codewithdaniel1.github.io/writeups/2026/jerseyCTF-vi/relay-artifact-tx-7/relay-artifact-tx-7.html" rel="nofollow noopener" target="_new">Original writeup</a> (https://codewithdaniel1.github.io/writeups/2026/jerseyCTF-vi/relay-artifact-tx-7/relay-artifact-tx-7.html).</div>
+<div>
+<!-- Go to www.addthis.com/dashboard to customize your tools -->
+
+<div class="addthis_inline_share_toolbox_ioch"></div>
+<!-- AddThis Button END -->
+</div>
+</div>
+<div class="page-header">
+<h3>Comments</h3>
+</div>
+
+<div class="modal hide fade" id="loginModal">
+<div class="modal-header">
+<button class="close" data-dismiss="modal">x</button>
+<h3>Sign in with</h3>
+</div>
+<div align="center" class="modal-body">
+<a href="/login/google-oauth2/?next=/writeup/41140"><img alt="Enter using Google" class="icon_logon" src="/static/images/google.svg"/></a>
+<a href="/login/twitter/?next=/writeup/41140"><img alt="Enter using Twitter" class="icon_logon" src="/static/images/twitter.svg"/></a>
+<a href="/login/facebook/?next=/writeup/41140"><img alt="Enter using Facebook" class="icon_logon" src="/static/images/facebook.svg"/></a>
+<a href="/login/github/?next=/writeup/41140"><img alt="Enter using Github" class="icon_logon" src="/static/images/github.svg"/></a>
+<p><a href="/amnesia">I don't remember</a></p>
+</div>
+</div>
+<div class="row">
+<div class="span4">
+</div>
+</div>
+</div>
+<footer class="footer">
+<div class="container">
+<p class="pull-right"><a class="twitter-follow-button" data-show-count="false" href="//twitter.com/CTFtime">Follow @CTFtime</a> </p>
+<p>© 2012 — 2026 CTFtime team.</p><p>All tasks and writeups are copyrighted by their respective authors. <a href="/privacy">Privacy Policy</a>.<br/>
+    Hosting provided by <a href="http://www.transdata.no/">Transdata</a>.</p>
+</div>
+</footer>
+
+<!--    <script src="/static/bootstrap/js/bootstrap-scrollspy.js"></script>-->
+
+<!--    <script src="/static/bootstrap/js/bootstrap-carousel.js"></script>-->
+
+<!-- Yandex.Metrika counter -->
+
+<!-- /Yandex.Metrika counter -->
+
+</body>
+</html>

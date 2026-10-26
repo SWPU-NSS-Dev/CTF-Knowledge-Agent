@@ -1,0 +1,1013 @@
+
+<!DOCTYPE html>
+
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="XiunoBBS 4.0" name="author"/>
+<meta content="" name="keywords"/>
+<meta content="题目思路、比赛经验等分享交流：" name="description"/>
+<meta content="Pwn-看雪安全社区｜专业技术交流与安全研究论坛" name="application-name"/>
+<meta content="webkit" name="renderer"/>
+<meta content="IE=Edge,chrome=1" http-equiv="X-UA-Compatible"/>
+<meta content="看雪安全社区｜专业技术交流与安全研究论坛" property="og:site_name"/>
+<meta content="看雪安全社区｜非营利性质的安全技术交流平台" property="og:title"/>
+<meta content="看雪安全社区是一个非营利性质的技术交流平台，致力于汇聚全球的安全研究者和开发者，专注于软件与系统安全、逆向工程、漏洞研究等领域的深度技术讨论与合作。" property="og:description"/>
+<title>Pwn-看雪安全社区｜专业技术交流与安全研究论坛</title>
+<link href="/view/img/favicon.ico" rel="shortcut icon"/>
+<link href="/view/img/favicon.ico" rel="icon" sizes="32x32"/>
+<link href="/view/img/favicon.ico" rel="Bookmark"/>
+<link href="/view/css/bootstrap.css?1.5" rel="stylesheet"/>
+<link href="/view/css/bootstrap-bbs.css?1.5" rel="stylesheet"/>
+<!-- <link rel="stylesheet" href="/view/css/bootstrap-icon.css"> -->
+<link href="/plugin/kanxue/css/kanxue.css?1.5" rel="stylesheet"/>
+<link href="/view/css/icon/iconfont.css" rel="stylesheet"/>
+
+<link href="//www.kanxue.com/view/css/vip.css" rel="stylesheet"/>
+<link href="plugin/xn_chm/css/user_tree.css" rel="stylesheet" type="text/css"/>
+<link href="plugin/xn_chm/css/folder-tree.css" rel="stylesheet" type="text/css"/>
+
+</head>
+<body>
+
+<!-- 顶部广告条 -->
+<!-- 顶部广告条结束 -->
+
+<header id="header">
+<div class="container" style="padding-right: 15px;padding-left: 15px;">
+
+</div>
+</header>
+<div class="position-fixed w-100 header_fiexd bottom-nav" style="width: 100%; height: 50px; bottom: 0; z-index: 2; background: #fafafa;">
+<div class="row mx-0 text-center align-items-center" style="height: 50px;">
+<a class="d-inline-blok col px-0 header_nav_a opts-group" href="//www.kanxue.com" style="max-width: 20%;">
+<div>
+<i class="icon-home"></i>
+</div>
+<div>
+                首页
+            </div>
+</a>
+<a class="d-inline-blok col px-0 header_nav_a opts-group active" href="//bbs.kanxue.com" style="max-width: 20%;">
+<div>
+<i class="icon-comments"></i>
+</div>
+<div>
+                社区
+            </div>
+</a>
+<a class="d-inline-blok col px-0 header_nav_a opts-group" href="//www.kanxue.com/course.htm" style="max-width: 20%;">
+<div>
+<i class="icon-book"></i>
+</div>
+<div>
+                课程
+            </div>
+</a>
+<a class="d-inline-blok col px-0 header_nav_a opts-group" href="//job.kanxue.com" style="max-width: 20%;">
+<div>
+<i class="icon-clipboard"></i>
+</div>
+<div>
+                招聘
+            </div>
+</a>
+<div class="dropup d-inline-blok col px-0" style="max-width: 20%;">
+<a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle d-inline-block header_nav_a opts-group" data-toggle="dropdown" href="#" id="dropdownMenuLink" role="button">
+<div>
+<i class="icon-list"></i>
+</div>
+<div>
+                    发现
+                </div>
+</a>
+<div aria-labelledby="dropdownMenuLink" class="dropdown-menu">
+<a class="dropdown-item" href="//www.kanxue.com/question-list.htm">问答</a>
+<a class="dropdown-item" href="//ctf.kanxue.com">CTF</a>
+<!-- <a class="dropdown-item" href="//ctf.kanxue.com/itembank.htm">题库</a> -->
+<!-- <a class="dropdown-item" href="//ce.kanxue.com">众测</a> -->
+<a class="dropdown-item" href="//www.kanxue.com/rank.htm">排行榜</a>
+<a class="dropdown-item" href="//www.kanxue.com/chm.htm">知识库</a>
+<a class="dropdown-item" href="//www.kanxue.com/tool.htm">工具下载</a>
+<a class="dropdown-item" href="//www.kanxue.com/conference.htm">峰会</a>
+<a class="dropdown-item" href="//www.kanxue.com/shop.htm">看雪商城</a>
+<a class="dropdown-item" href="//www.kanxue.com/certificate.htm">证书查询</a>
+</div>
+</div>
+</div>
+</div>
+<main id="body">
+<div class="container">
+
+<ol class="breadcrumb mb-0">
+<li class="breadcrumb-item"><a aria-label="首页" href="./"><i class="icon-home"></i> 看雪社区</a></li>
+<li class="breadcrumb-item active"><a href="forum-116.htm">CTF竞技</a></li>
+<li class="breadcrumb-item active"><a href="forum-171.htm">Pwn</a></li>
+<div class="media-body text-right">
+<a class="btn btn-sm btn-primary" href="thread-create-171.htm" id="createArticleBtn" role="button">发新帖</a>
+</div>
+</ol>
+<div class="hidden-xl hidden-lg">
+<div class="card pa-sm">
+<div class="card-body">
+<dl class="row">
+<dt class="vtop" style="width: 68px">
+<img class="forum_icon" height="60" src="upload/forum/171.png" width="60"/>
+</dt>
+<dd class="vtop">
+<div class="text-small">
+<span class="font-weight-bold" style="font-size: 15px;">Pwn</span>　
+							<span><span class="text-grey text-small">版块主题：</span><b>862 </b></span>　
+							<span><span class="text-grey text-small">今日主题：</span><b>0</b></span>　
+							<span><span class="text-grey text-small">今日回帖：</span><b>0</b></span>
+</div>
+<div class="text-middle text-muted" style="line-height: 2;">
+							题目思路、比赛经验等分享交流：<a "="" href="https://kctf.kanxue.com/challenges?category=8" target="_blank">KCTF靶场</a>
+</div>
+<div class="text-small" style="line-height: 2"><span class="text-grey">版主：</span>
+<a class="text-muted text-nowrap" href="user-949925.htm">
+<img class="avatar-1" src="//passport.kanxue.com/upload/avatar/925/949925.png?1648533946"/>
+									winmt								</a>  
+													</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+<table class="small nav_tag_list">
+<tr>
+<td align="right" class="text-muted text-nowrap" valign="top">
+					标签：
+				</td>
+<td>
+<a href="forum-171-1-0___.htm">全部</a>
+<a href="forum-171-1-180___.htm">基础知识</a>
+<a href="forum-171-1-181___.htm">漏洞机制</a>
+<a href="forum-171-1-182___.htm">溢出</a>
+<a href="forum-171-1-183___.htm">格式化</a>
+<a href="forum-171-1-184___.htm">浏览器相关</a>
+<a href="forum-171-1-185___.htm">内核</a>
+<a href="forum-171-1-186___.htm">专题</a>
+<a href="forum-171-1-187___.htm">题解集锦</a>
+</td>
+</tr>
+</table>
+<div class="row mx-0">
+<div class="col-12 col-md-9 px-0">
+<div class="card px-2 px-md-3">
+<div class="py-2">
+<ul class="nav nav-tabs float-left">
+<li class="nav-item">
+<a class="nav-link active" href="forum-171.htm">最新主题</a>
+</li>
+<li class="nav-item">
+<a class="nav-link nav-digest" href="forum-171-1.htm?digest=1"><i class="icon-diamond flash"></i> 精华</a>
+</li>
+</ul>
+<div class="float-right pt-1">
+<div class="text-small" style="padding-top: 4px;">
+					排序：
+					<a class="" href="forum-171-1.htm?orderby=tid&amp;digest=0" rel="nofollow"><i class="icon-orderby icon-orderby-tid" title="按发帖时间"></i></a>
+<a class="" href="forum-171-1.htm?orderby=lastpid&amp;digest=0" rel="nofollow"><i class="icon-orderby icon-orderby-lastpid-active" title="按回帖时间"></i></a>   
+					</div>
+</div>
+</div>
+<div class="card-body pt-0 px-0">
+<table class="table threadlist">
+<tbody>
+<tr class="thread" data-tid="223337">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-223337.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-223337.htm" style="vertical-align: middle;">[原创] 如何在pwn题中更有效地使用GDB</a>
+<i class="icon-paperclip text-grey"></i>
+<span>
+<i aria-hidden="true" class="icon-digest-3 icon-1x mr-3" title="精华"></i>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username hidden-sm hidden-md" href="user-home-744712.htm" style="color: #999999;">joshuahxl</a>
+<span class="date hidden-sm hidden-md" style="color: #999999;">・2017-12-15 14:33</span>
+<span style="color: #999999;">
+<span class="mx-2"><i aria-hidden="true" class="icon-long-arrow-left" style="color: #d6d6d6;"></i></span>
+<a class="username" href="user-home-515067.htm" style="color: #999999;">@沈园</a>
+<span>2017-12-15 15:51</span>
+</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">12470</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">1</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="223336">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-223336.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-223336.htm" style="vertical-align: middle;">[原创]简单的地址泄露</a>
+<i class="icon-paperclip text-grey"></i>
+<span>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username hidden-sm hidden-md" href="user-home-263.htm" style="color: #999999;">nbw</a>
+<span class="date hidden-sm hidden-md" style="color: #999999;">・2017-12-15 14:03</span>
+<span style="color: #999999;">
+<span class="mx-2"><i aria-hidden="true" class="icon-long-arrow-left" style="color: #d6d6d6;"></i></span>
+<a class="username" href="user-home-703263.htm" style="color: #999999;">@sudozhange</a>
+<span>2017-12-15 14:12</span>
+</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">5833</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">1</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="223092">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-223092.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-223092.htm" style="vertical-align: middle;">[求助][已解决] 堆溢出 house of spirit 关于gcc编译后的栈空间变量顺序问题</a>
+<span>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username hidden-sm hidden-md" href="user-home-730610.htm" style="color: #999999;">心许雪</a>
+<span class="date hidden-sm hidden-md" style="color: #999999;">・2017-12-3 15:01</span>
+<span style="color: #999999;">
+<span class="mx-2"><i aria-hidden="true" class="icon-long-arrow-left" style="color: #d6d6d6;"></i></span>
+<a class="username" href="user-home-730610.htm" style="color: #999999;">@心许雪</a>
+<span>2017-12-5 10:09</span>
+</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">5438</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">7</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="222459">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-222459.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-222459.htm" style="vertical-align: middle;">[原创]看雪10月ctf2017 TSRC 第四题——double free</a>
+<span>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username hidden-sm hidden-md" href="user-home-742286.htm" style="color: #999999;">holing</a>
+<span class="date hidden-sm hidden-md" style="color: #999999;">・2017-11-1 11:43</span>
+<span style="color: #999999;">
+<span class="mx-2"><i aria-hidden="true" class="icon-long-arrow-left" style="color: #d6d6d6;"></i></span>
+<a class="username" href="user-home-680621.htm" style="color: #999999;">@小k不小</a>
+<span>2017-11-5 12:38</span>
+</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">5581</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">4</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="222446">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-222446.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-222446.htm" style="vertical-align: middle;">[原创]2017CTF秋季赛 第四题 club_pwn 解题报告</a>
+<span>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username hidden-sm hidden-md" href="user-home-148805.htm" style="color: #999999;">kkHAIKE</a>
+<span class="date hidden-sm hidden-md" style="color: #999999;">・2017-10-31 20:39</span>
+<span style="color: #999999;">
+<span class="mx-2"><i aria-hidden="true" class="icon-long-arrow-left" style="color: #d6d6d6;"></i></span>
+<a class="username" href="user-home-30337.htm" style="color: #999999;">@风间仁</a>
+<span>2017-11-5 09:49</span>
+</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">4599</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">1</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="222457">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-222457.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-222457.htm" style="vertical-align: middle;">[原创]CTF2017 第四题 club_pwn writeup</a>
+<span>
+<i aria-hidden="true" class="icon-digest-3 icon-1x mr-3" title="精华"></i>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username hidden-sm hidden-md" href="user-home-672018.htm" style="color: #999999;">hotwinter</a>
+<span class="date hidden-sm hidden-md" style="color: #999999;">・2017-11-1 11:19</span>
+<span style="color: #999999;">
+<span class="mx-2"><i aria-hidden="true" class="icon-long-arrow-left" style="color: #d6d6d6;"></i></span>
+<a class="username" href="user-home-450922.htm" style="color: #999999;">@龙飞雪</a>
+<span>2017-11-3 15:17</span>
+</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">8279</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">3</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="222464">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-222464.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-222464.htm" style="vertical-align: middle;">[原创]kxctf2017 第四题 writeup</a>
+<span>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username hidden-sm hidden-md" href="user-home-404777.htm" style="color: #999999;">diycode</a>
+<span class="date hidden-sm hidden-md" style="color: #999999;">・2017-11-1 13:09</span>
+<span style="color: #999999;">
+<span class="mx-2"><i aria-hidden="true" class="icon-long-arrow-left" style="color: #d6d6d6;"></i></span>
+<a class="username" href="user-home-756169.htm" style="color: #999999;">@叶小北</a>
+<span>2017-11-2 12:01</span>
+</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">4614</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">1</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="222462">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-222462.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-222462.htm" style="vertical-align: middle;">[原创]第四题 club_pwn exp</a>
+<i class="icon-paperclip text-grey"></i>
+<span>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username" href="user-home-655136.htm" style="color: #999999;">yypEx</a>
+<span class="date" style="color: #999999;">・2017-11-1 12:46</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">3958</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">0</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="222431">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-222431.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-222431.htm" style="vertical-align: middle;">[原创]看雪.TSRC 2017CTF秋季赛第四题WP</a>
+<span>
+<i aria-hidden="true" class="icon-digest-3 icon-1x mr-3" title="精华"></i>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username" href="user-home-547150.htm" style="color: #999999;">poyoten</a>
+<span class="date" style="color: #999999;">・2017-10-31 12:25</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">4398</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">0</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="222422">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-222422.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-222422.htm" style="vertical-align: middle;">[原创]第4题</a>
+<span>
+<i aria-hidden="true" class="icon-digest-3 icon-1x mr-3" title="精华"></i>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username" href="user-home-30337.htm" style="color: #999999;">风间仁</a>
+<span class="date" style="color: #999999;">・2017-10-31 05:27</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">4225</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">0</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="222419">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-222419.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-222419.htm" style="vertical-align: middle;">[原创]CTF2017 秋季赛 第四题 club pwn 提交</a>
+<span>
+<i aria-hidden="true" class="icon-digest-2 icon-1x mr-3" title="优秀"></i>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username" href="user-home-679314.htm" style="color: #999999;">raycp</a>
+<span class="date" style="color: #999999;">・2017-10-30 22:16</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">3773</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">0</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="222414">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-222414.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-222414.htm" style="vertical-align: middle;">[原创]第四题club_pwn writeup</a>
+<span>
+<i aria-hidden="true" class="icon-digest-3 icon-1x mr-3" title="精华"></i>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username" href="user-home-767867.htm" style="color: #999999;">ReeHeiHei</a>
+<span class="date" style="color: #999999;">・2017-10-30 20:46</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">4328</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">0</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="222406">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-222406.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-222406.htm" style="vertical-align: middle;">[原创]看雪CTF2017秋季赛第四题club_pwn</a>
+<span>
+<i aria-hidden="true" class="icon-digest-3 icon-1x mr-3" title="精华"></i>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username" href="user-home-669782.htm" style="color: #999999;">hsadkhk</a>
+<span class="date" style="color: #999999;">・2017-10-30 17:59</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">4469</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">0</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="221780">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-221780.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-221780.htm" style="vertical-align: middle;">[下载][下载]club</a>
+<i class="icon-paperclip text-grey"></i>
+<span>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username" href="user-home-678748.htm" style="color: #999999;">BPG</a>
+<span class="date" style="color: #999999;">・2017-10-13 11:50</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">3334</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">0</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="218518">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-218518.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-218518.htm" style="vertical-align: middle;">[原创][pwn学习日记] pwnable.tw silver_bullet</a>
+<i class="icon-paperclip text-grey"></i>
+<span>
+<i aria-hidden="true" class="icon-digest-3 icon-1x mr-3" title="精华"></i>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username" href="user-home-750361.htm" style="color: #999999;">Zn风扇</a>
+<span class="date" style="color: #999999;">・2017-6-15 20:33</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">6606</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">0</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="217268">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-217268.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-217268.htm" style="vertical-align: middle;">[原创]某个PWN题目(decoder)分析</a>
+<i class="icon-paperclip text-grey"></i>
+<span>
+<i aria-hidden="true" class="icon-digest-3 icon-1x mr-3" title="精华"></i>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username hidden-sm hidden-md" href="user-home-39732.htm" style="color: #999999;">netwind</a>
+<span class="date hidden-sm hidden-md" style="color: #999999;">・2017-4-27 19:19</span>
+<span style="color: #999999;">
+<span class="mx-2"><i aria-hidden="true" class="icon-long-arrow-left" style="color: #d6d6d6;"></i></span>
+<a class="username" href="user-home-161471.htm" style="color: #999999;">@岭南散人</a>
+<span>2017-6-1 21:45</span>
+</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">6205</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">2</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="217731">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-217731.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-217731.htm" style="vertical-align: middle;">[原创]pwnable.kr dragon分析</a>
+<span>
+<i aria-hidden="true" class="icon-digest-2 icon-1x mr-3" title="优秀"></i>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username hidden-sm hidden-md" href="user-home-750361.htm" style="color: #999999;">Zn风扇</a>
+<span class="date hidden-sm hidden-md" style="color: #999999;">・2017-5-19 12:53</span>
+<span style="color: #999999;">
+<span class="mx-2"><i aria-hidden="true" class="icon-long-arrow-left" style="color: #d6d6d6;"></i></span>
+<a class="username" href="user-home-750375.htm" style="color: #999999;">@神风s</a>
+<span>2017-5-30 09:53</span>
+</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">4909</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">1</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="217783">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-217783.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-217783.htm" style="vertical-align: middle;">[求助]求 SSCTF2017 逆向 和 PWN 题文件</a>
+<span>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username hidden-sm hidden-md" href="user-home-744054.htm" style="color: #999999;">amlia</a>
+<span class="date hidden-sm hidden-md" style="color: #999999;">・2017-5-22 08:36</span>
+<span style="color: #999999;">
+<span class="mx-2"><i aria-hidden="true" class="icon-long-arrow-left" style="color: #d6d6d6;"></i></span>
+<a class="username" href="user-home-637008.htm" style="color: #999999;">@WoodCrack</a>
+<span>2017-5-22 17:08</span>
+</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">4623</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">2</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="217569">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-217569.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-217569.htm" style="vertical-align: middle;">[分享]pwn姿势三 &amp;&amp; 四</a>
+<i class="icon-paperclip text-grey"></i>
+<span>
+<i aria-hidden="true" class="icon-digest-2 icon-1x mr-3" title="优秀"></i>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username" href="user-home-701910.htm" style="color: #999999;">TKMoma</a>
+<span class="date" style="color: #999999;">・2017-5-12 15:39</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">4676</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">0</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="217498">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-217498.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-217498.htm" style="vertical-align: middle;">[分享]pwn小姿势二</a>
+<i class="icon-paperclip text-grey"></i>
+<span>
+<i aria-hidden="true" class="icon-digest-1 icon-1x mr-3" title="关注"></i>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username hidden-sm hidden-md" href="user-home-701910.htm" style="color: #999999;">TKMoma</a>
+<span class="date hidden-sm hidden-md" style="color: #999999;">・2017-5-9 13:37</span>
+<span style="color: #999999;">
+<span class="mx-2"><i aria-hidden="true" class="icon-long-arrow-left" style="color: #d6d6d6;"></i></span>
+<a class="username" href="user-home-701910.htm" style="color: #999999;">@TKMoma</a>
+<span>2017-5-9 13:58</span>
+</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">4233</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">3</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="217486">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-217486.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-217486.htm" style="vertical-align: middle;">[分享]pwn小姿势一</a>
+<i class="icon-paperclip text-grey"></i>
+<span>
+<i aria-hidden="true" class="icon-digest-1 icon-1x mr-3" title="关注"></i>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username" href="user-home-701910.htm" style="color: #999999;">TKMoma</a>
+<span class="date" style="color: #999999;">・2017-5-8 21:18</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">4134</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">0</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="thread" data-tid="186455">
+<td class="td-subject px-3">
+<div class="subject" style="margin-bottom: 0.5rem;">
+<a href="thread-186455.htm" style="vertical-align: middle;" target="_blank" title="新窗口打开">
+<span class="icon-xiuno icon-post-grey"></span>
+</a>
+<a href="thread-186455.htm" style="vertical-align: middle;">[原创]ACTF EXP分析</a>
+<i class="icon-paperclip text-grey"></i>
+<span>
+<i aria-hidden="true" class="icon-digest-2 icon-1x mr-3" title="优秀"></i>
+</span>
+</div>
+<div class="row small mx-0 mb-2">
+<div class="col px-0">
+<a class="username hidden-sm hidden-md" href="user-home-591083.htm" style="color: #999999;">JoySauce</a>
+<span class="date hidden-sm hidden-md" style="color: #999999;">・2014-4-10 16:56</span>
+<span style="color: #999999;">
+<span class="mx-2"><i aria-hidden="true" class="icon-long-arrow-left" style="color: #d6d6d6;"></i></span>
+<a class="username" href="user-home-591083.htm" style="color: #999999;">@JoySauce</a>
+<span>2014-4-10 20:51</span>
+</span>
+</div>
+<div class="text-right" style="color: #999999;">
+<div class="hidden-sm hidden-md mr-2" style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">7206</span>
+</div>
+<div style="text-align: left; display: inline-block;">
+
+<span style="vertical-align: middle;">7</span>
+</div>
+</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+<div class="col-3 pr-0 hidden-sm hidden-md" style="padding-left: 15px;">
+<div class="card mb-3 position-relative">
+<div class="py-3 px-3 text-center">
+<img class="forum_icon" height="60" src="upload/forum/171.png" width="60"/>
+<div class="py-3">
+<span class="font-weight-bold" style="font-size: 18px;">Pwn</span>
+</div>
+<div style="color: #777777;">题目思路、比赛经验等分享交流：<a "="" href="https://kctf.kanxue.com/challenges?category=8" target="_blank">KCTF靶场</a>
+</div>
+<div class="row mx-0 py-3">
+<div class="col px-0">
+<div style="color: #303030; font-size: 16px;">862</div>
+<div class="small" style="color: #888888;">版块主题</div>
+</div>
+<div class="col px-0">
+<div style="color: #303030; font-size: 16px;">0</div>
+<div class="small" style="color: #888888;">今日主题</div>
+</div>
+<div class="col px-0">
+<div style="color: #303030; font-size: 16px;">0</div>
+<div class="small" style="color: #888888;">今日回帖</div>
+</div>
+</div>
+<!-- <a href="forum-45.htm" class="small" style="border: 1px solid #C4C4C4; color: #9B9B9B; border-radius: 10px; padding: 3px 8px; margin-left: 4px;">茶余饭后</a> -->
+</div>
+</div>
+<div class="card mb-3 position-relative">
+<div class="py-3 px-3">
+<span style="font-size: 1.2rem;">版主</span>
+</div>
+<div class="pb-4 px-3 row mx-0">
+<div class="col-4 text-center px-0">
+<div>
+<a href="user-home-949925.htm">
+<img src="//passport.kanxue.com/upload/avatar/925/949925.png?1648533946" style="width: 36px;height: 36px;border-radius: 5rem;"/>
+</a>
+</div>
+<div class="text-truncate">
+<a class="text-muted" href="user-home-949925.htm" title="winmt">
+								winmt							</a>
+</div>
+</div>
+</div>
+</div>
+<div class="card mb-3">
+<div class="carousel slide" data-forum_adpostdata="2_15_12" data-ride="carousel" id="carouselAdIndicators">
+<div class="carousel-inner">
+<div class="carousel-item active">
+<a class="forum_ad_link" data-href="https://www.kanxue.com/course.htm" data-num="1" href="javascript:void(0);">
+<img alt="AIMG" class="d-block w-100" src="https://www.kanxue.com/upload/resource/mediapic/202101231022_4AGANQE42KE4Y8H.jpg?e=1793021100&amp;s=D95085Zzivhw1T9haWu0YA"/>
+</a>
+</div>
+<div class="carousel-item">
+<a class="forum_ad_link" data-href="https://job.kanxue.com/" data-num="2" href="javascript:void(0);">
+<img alt="AIMG" class="d-block w-100" src="https://www.kanxue.com/upload/resource/mediapic/202101231023_8PNCDPDQ5HFBV9A.jpg?e=1793021100&amp;s=Lff6kVXqqwL2_rc2ozm7mQ"/>
+</a>
+</div>
+</div>
+<ol class="carousel-indicators mb-0">
+<li class="active" data-slide-to="0" data-target="#carouselAdIndicators"></li>
+<li data-slide-to="1" data-target="#carouselAdIndicators"></li>
+<li data-slide-to="2" data-target="#carouselAdIndicators"></li>
+</ol>
+</div>
+</div>
+<div class="card mb-3 position-relative">
+<div class="nice_book_content" style="padding-bottom: 3px;box-sizing: border-box;border-radius: 8px;background: #fff;">
+<div class="card_cover">
+<a href="//www.kanxue.com/book-section_list-83.htm" target="_blank" title="[2026夏季班]《安卓高级研修班(网课)》月薪两万计划">
+<img name="逆向工程" src="//www.kanxue.com//upload/resource/course/202012111511_HW9YNK35BE96RJ4.jpg" style="height: 151px;width: 100%;"/>
+</a>
+<!-- <span class="d-inline-block position-absolute" style="top: 0; left: 0;"><img src="view/img/new_homepage/tuijian.png" alt="" style="width: 40px;"> </span> -->
+</div>
+<div class="book_title pl-2 pt-2">
+<a href="//www.kanxue.com/book-section_list-83.htm" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block;" title="[2026夏季班]《安卓高级研修班(网课)》月薪两万计划">
+									[2026夏季班]《安卓高级研修班(网课)》月薪两万计划		                                                            </a>
+</div>
+<div class="book_count row mx-0 px-2" style="text-indent: 0px;">
+<!-- <span class='text-muted'><i class='fa fa-user-circle-o'></i> qq王磊</span> -->
+<span class="text-muted ml-1">中级</span>
+<!-- <div class="col px-0 text-right">
+									<span class="price" style="font-size: 12px; color: #FF842A;">5899</span>
+								</div>  -->
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<div class="container px-0 pb-3 bbs_footer_start_column">
+<div class="row mx-0 bbs_footer_at_column hidden-sm hidden-md" style="text-align: center; height: 76px;">
+<div class="col-md-6 px-0" style="height: 100%;">
+<a href="https://meet.kanxue.com/kxmeet-19.htm" style="height: 100%;" target="_blank">
+<!-- <p></p > -->
+<img height="100%" src="https://www.kanxue.com/upload/resource/mediapic/202609151823_RWW8KEZQ9R984MM.webp?e=1793021100&amp;s=qyTs8cTCWAaOImjZAB-nog" width="100%"/>
+</a>
+</div>
+<div class="col-md-6 px-0" style="height: 100%;">
+<a href="https://bbs.kanxue.com/thread-223326.htm" style="height: 100%;" target="_blank">
+<!-- <p></p > -->
+<img height="100%" src="https://www.kanxue.com/upload/resource/mediapic/202510281550_CDXD88ZBBVP39BR.png?e=1793021100&amp;s=wcFWNDodwBvySsWjksAAEg" width="100%"/>
+</a>
+</div>
+</div>
+</div>
+
+<!--[if lt IE 9]>
+	<script>window.location = 'browser.htm';</script>
+	<![endif]-->
+
+<div class="act_go_top" style="overflow: hidden; cursor: pointer; border-radius: 5px; box-shadow: 0 1px 2px 0 #eee;position: fixed; bottom: 80px; right: 10px; z-index: 99; width: 60px; height: 60px; display: none;">
+<a class="go_top" href="javascript:;" style="width: 60px; height: 60px;display: flex;
+		align-items: center;
+		justify-content: center; outline: none; text-align: center; color: #85888b; background: #fff;" title="切换主题">
+
+</a>
+<a class="go_top1" href="javascript:;" style="position: relative; top: -60px; right: -60px; width: 60px; height: 60px;display: flex;
+		align-items: center;
+		justify-content: center; outline: none; text-align: center; color: #fff; background: #0099ee;" title="切换主题">
+		返回<br/>顶部
+	</a>
+</div>
+</body>
+</html>
+
+<!-- Google tag (gtag.js) -->
+
