@@ -101,6 +101,8 @@ python scripts/evaluate_hybrid.py --config config.local.yaml --documents 30 --to
 
 覆盖 GOT、PLT、UAF、R_X86_64_JUMP_SLOT、__free_hook、malloc@plt、CVE-2021-44228、ELF、栈溢出和任意地址写。修正了评估脚本将命中文章按 fixture 顺序显示的问题，现在保留实际检索排名并有回归测试。以上指标只描述此小型固定语料，不代表真实大规模准确率或网络吞吐量。
 
+GitHub 已推送实现提交 `81802bc`。[对应 Actions 运行](https://github.com/Zhouhang9527/CTF-Knowledge-Agent/actions/runs/40301615121)被账户账单/支出额度状态阻止，job 没有启动、steps 为空。GitHub 注释明确提示近期账户付款失败或需要提高 spending limit；远端 CI **没有通过，也没有执行代码测试**。本地 69 项测试、Ruff 和构建结果独立有效。未修改账户账单、仓库私有性或以跳过检查伪装 CI 通过。
+
 原始验收输出保存在被忽略的 `outputs/stage2-*-report.json`；包含真实模型输出及失败记录，没有提交模型、Token、原文或运行数据。
 
 ## 实际遇到的失败与边界
