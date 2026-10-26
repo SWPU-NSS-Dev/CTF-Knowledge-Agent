@@ -28,6 +28,8 @@ Windows 11 build 26200；Python 3.12.12；SQLite 3.51.1，实际使用项目 `.v
 
 最终结果：**40 passed，0 failed**；Ruff 通过；wheel 构建成功。有 1 条 Starlette TestClient 使用 httpx 的弃用提示，不影响测试结果。
 
+远端 CI 已触发，但 GitHub 在分配 runner 前阻止了执行：账户近期付款失败或支出额度需要调整，job 没有任何执行步骤。因此远端 CI **未完成验证**，不能称为通过；账户状态恢复后可重新运行。详情：<https://github.com/Zhouhang9527/CTF-Knowledge-Agent/actions/runs/40293891857>。仓库保持私有，未修改账单或支出设置。
+
 覆盖：版本/去重、中文/符号检索、代码保真、HTML 嵌套清理、备份完整性/路径、schema 迁移、恢复与租约隔离、GitHub 多级目录/删除集合/失败游标、ETag 冷热缓存、IP 固定/重定向、API 鉴权/后台错误、CLI 配置传播/失败退出码。
 
 ## 真实来源验收
