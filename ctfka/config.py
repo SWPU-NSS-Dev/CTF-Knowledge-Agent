@@ -4,7 +4,51 @@ import os
 from pathlib import Path
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+
+class LLMConfig(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    provider: str = "ollama"
+    base_url: str = "http://127.0.0.1:11434"
+    chat_model: str = "qwen3:4b"
+    embedding_model: str = "qwen3-embedding:0.6b"
+    timeout_seconds: float = Field(default=120, gt=0)
+    max_context_tokens: int | None = Field(default=8192, gt=0)
+    options: dict[str, Any] = Field(default_factory=dict)
+    embedding_options: dict[str, Any] = Field(default_factory=dict)
+    embedding_dimensions: int | None = Field(default=None, gt=0)
+    keep_alive: str = "5m"
+    think: bool = True
+    structured_think: bool = False
+
+
+class RetrievalConfig(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    keyword_top_k: int = Field(default=30, ge=1)
+    vector_top_k: int = Field(default=30, ge=1)
+    final_top_k: int = Field(default=8, ge=1)
+    rrf_k: int = Field(default=60, ge=1)
+    exact_match_boost: float = Field(default=0.05, ge=0)
+    use_reranker: bool = False
+    semantic_enabled: bool = True
+    context_chars: int | None = Field(default=24000, gt=0)
+    embedding_batch_size: int = Field(default=8, ge=1)
+
+    @field_validator("use_reranker")
+    @classmethod
+    def reject_unimplemented_reranker(cls, value: bool) -> bool:
+        if value:
+            raise ValueError("reranker is not implemented")
+        return value
+
+
+class ChunkConfig(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    max_chars: int = Field(default=1800, gt=0)
 
 
 class SourceConfig(BaseModel):
@@ -30,6 +74,9 @@ class Settings(BaseModel):
     token: str | None = None
     host: str = "127.0.0.1"
     port: int = Field(default=8000, ge=1, le=65535)
+    llm: LLMConfig = Field(default_factory=LLMConfig)
+    retrieval: RetrievalConfig = Field(default_factory=RetrievalConfig)
+    chunking: ChunkConfig = Field(default_factory=ChunkConfig)
 
     @classmethod
     def load(cls, path: str | Path | None = None) -> Settings:
@@ -49,4 +96,10 @@ class Settings(BaseModel):
         token = os.getenv("CTFKA_TOKEN")
         if token is not None:
             values["token"] = token
+        llm = dict(values.get("llm") or {})
+        for env_name, field_name in (("CTFKA_OLLAMA_BASE_URL", "base_url"), ("CTFKA_CHAT_MODEL", "chat_model"), ("CTFKA_EMBEDDING_MODEL", "embedding_model")):
+            if (env_value := os.getenv(env_name)) is not None:
+                llm[field_name] = env_value
+        if llm:
+            values["llm"] = llm
         return cls.model_validate(values)

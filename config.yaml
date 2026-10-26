@@ -1,4 +1,23 @@
 data_dir: ./data
+llm:
+  provider: ollama
+  base_url: http://127.0.0.1:11434
+  chat_model: qwen3:4b
+  embedding_model: qwen3-embedding:0.6b
+  timeout_seconds: 120
+  max_context_tokens: 8192
+  keep_alive: 5m
+  think: true
+  structured_think: false
+retrieval:
+  semantic_enabled: true
+  keyword_top_k: 30
+  vector_top_k: 30
+  final_top_k: 8
+  exact_match_boost: 0.05
+  context_chars: 24000
+chunking:
+  max_chars: 1800
 workers: 8
 token: null
 host: 127.0.0.1

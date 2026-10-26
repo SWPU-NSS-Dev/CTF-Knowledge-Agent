@@ -16,10 +16,14 @@ sources_app = typer.Typer(help="Manage configured sources", no_args_is_help=True
 jobs_app = typer.Typer(help="Inspect and retry durable crawl jobs", no_args_is_help=True)
 backup_app = typer.Typer(help="Create or restore store backups", no_args_is_help=True)
 index_app = typer.Typer(help="Build the offline search index", no_args_is_help=True)
+models_app = typer.Typer(help="Inspect local language models", no_args_is_help=True)
+knowledge_app = typer.Typer(help="Inspect extracted knowledge cards", no_args_is_help=True)
 app.add_typer(sources_app, name="sources")
 app.add_typer(jobs_app, name="jobs")
 app.add_typer(backup_app, name="backup")
 app.add_typer(index_app, name="index")
+app.add_typer(models_app, name="models")
+app.add_typer(knowledge_app, name="knowledge")
 
 
 def _settings(config: Path | None, data_dir: Path | None) -> Settings:
@@ -141,13 +145,108 @@ def import_path(ctx: typer.Context, path: Path = typer.Argument(..., exists=True
 
 
 @index_app.command("build")
-def index_build(ctx: typer.Context) -> None:
-    _json(Store(ctx.obj.data_dir).rebuild_index())
+def index_build(ctx: typer.Context, semantic: bool = typer.Option(False, "--semantic/--no-semantic")) -> None:
+    settings = ctx.obj
+    from ctfka.indexing.service import IndexService
+    from ctfka.llm.ollama import OllamaProvider
+    async def run() -> dict[str, Any]:
+        provider = OllamaProvider(settings.llm)
+        try:
+            return await IndexService(settings, Store(settings.data_dir), provider).build(semantic=semantic)
+        finally:
+            await provider.close()
+    _json(asyncio.run(run()))
 
 
 @app.command()
-def search(ctx: typer.Context, query: str = typer.Argument(...), limit: int = typer.Option(20, min=1), source: str | None = typer.Option(None, "--source")) -> None:
-    _json({"items": Store(ctx.obj.data_dir).search(query, limit=limit, source=source)})
+def search(ctx: typer.Context, query: str = typer.Argument(...), limit: int = typer.Option(20, min=1), source: str | None = typer.Option(None, "--source"), mode: str = typer.Option("keyword", "--mode", help="keyword or hybrid")) -> None:
+    if mode not in {"keyword", "hybrid"}:
+        raise typer.BadParameter("mode must be keyword or hybrid")
+    settings = ctx.obj
+    store = Store(settings.data_dir)
+    if mode == "keyword":
+        _json({"items": store.search(query, limit=limit, source=source)})
+        return
+    from ctfka.llm.ollama import OllamaProvider
+    from ctfka.retrieval.service import RetrievalService
+    async def run() -> dict[str, Any]:
+        provider = OllamaProvider(settings.llm)
+        try:
+            return await RetrievalService(settings, store, provider).search(query, limit=limit, source=source, semantic=True)
+        finally:
+            await provider.close()
+    _json(asyncio.run(run()))
+
+
+@models_app.command("status")
+def models_status(ctx: typer.Context) -> None:
+    from ctfka.llm.ollama import OllamaProvider
+    async def run() -> dict[str, Any]:
+        provider = OllamaProvider(ctx.obj.llm)
+        try:
+            return await provider.status()
+        finally:
+            await provider.close()
+    _json(asyncio.run(run()))
+
+
+@app.command()
+def chat(ctx: typer.Context, question: str | None = typer.Argument(None)) -> None:
+    """Ask the local RAG assistant; omit QUESTION for interactive chat."""
+    from ctfka.llm.ollama import OllamaProvider
+    from ctfka.retrieval.rag import RAGService
+    settings = ctx.obj
+    store = Store(settings.data_dir)
+    async def ask(messages: list[dict[str, str]]) -> dict[str, Any]:
+        provider = OllamaProvider(settings.llm)
+        try:
+            return await RAGService(settings, store, provider).answer(messages)
+        finally:
+            await provider.close()
+    if question:
+        _json(asyncio.run(ask([{"role": "user", "content": question}])))
+        return
+    history: list[dict[str, str]] = []
+    while True:
+        try:
+            value = typer.prompt("你", prompt_suffix=" > ")
+        except (EOFError, KeyboardInterrupt):
+            break
+        if value.strip().lower() in {"exit", "quit", "退出"}:
+            break
+        history.append({"role": "user", "content": value})
+        result = asyncio.run(ask(history))
+        typer.echo(result.get("answer", ""))
+        history.append({"role": "assistant", "content": result.get("answer", "")})
+        _json({key: result.get(key) for key in ("citations", "grounded", "warnings")})
+
+
+@app.command()
+def extract(ctx: typer.Context, article_id: str = typer.Argument(...)) -> None:
+    from ctfka.llm.ollama import OllamaProvider
+    from ctfka.processing.extraction import KnowledgeExtractor
+    settings = ctx.obj
+    store = Store(settings.data_dir)
+    async def run() -> dict[str, Any]:
+        provider = OllamaProvider(settings.llm)
+        try:
+            return await KnowledgeExtractor(settings, store, provider).extract(article_id)
+        finally:
+            await provider.close()
+    _json(asyncio.run(run()))
+
+
+@knowledge_app.command("list")
+def knowledge_list(ctx: typer.Context, limit: int = typer.Option(50, min=1), offset: int = typer.Option(0, min=0)) -> None:
+    _json({"items": Store(ctx.obj.data_dir).list_knowledge(limit=limit, offset=offset)})
+
+
+@knowledge_app.command("show")
+def knowledge_show(ctx: typer.Context, knowledge_id: str = typer.Argument(...)) -> None:
+    result = Store(ctx.obj.data_dir).get_knowledge(knowledge_id)
+    if result is None:
+        raise typer.BadParameter("Knowledge card not found")
+    _json(result)
 
 
 @app.command()

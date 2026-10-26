@@ -16,6 +16,7 @@ from typing import Any
 from urllib.parse import urlsplit, urlunsplit
 
 from ctfka.contracts import DiscoveredItem, FetchedDocument, ParsedDocument
+from ctfka.indexing.storage import IndexStorageMixin
 from ctfka.ingestion.parser import parse_document
 
 _SCHEMA_VERSION = 2
@@ -67,7 +68,7 @@ def _simhash(text: str) -> int:
     return value if value < (1 << 63) else value - (1 << 64)
 
 
-class Store:
+class Store(IndexStorageMixin):
     """SQLite-backed article, job, state and immutable raw snapshot store."""
 
     def __init__(self, data_dir: str | Path):
@@ -123,7 +124,8 @@ class Store:
                     raise RuntimeError("SQLite was built without FTS5 support") from exc
                 db.execute("INSERT INTO schema_migrations VALUES(1,?)", (_now(),))
                 version = 1
-            if version < 2:
+            columns = {row["name"] for row in db.execute("PRAGMA table_info(articles)").fetchall()}
+            if version < 2 or "simhash" not in columns:
                 db.execute("ALTER TABLE articles ADD COLUMN simhash INTEGER")
                 db.execute("CREATE INDEX articles_simhash_idx ON articles(simhash)")
                 for row in db.execute(
@@ -133,7 +135,8 @@ class Store:
                         "UPDATE articles SET simhash=? WHERE id=?",
                         (_simhash(row["content"]), row["id"]),
                     )
-                db.execute("INSERT INTO schema_migrations VALUES(2,?)", (_now(),))
+                db.execute("INSERT OR REPLACE INTO schema_migrations VALUES(2,?)", (_now(),))
+        self._initialize_stage2()
 
     def register_source(self, name: str, adapter: str, config: dict | None = None) -> None:
         now = _now()
@@ -488,6 +491,7 @@ class Store:
                     if p.is_file() and not p.name.endswith(".tmp")
                 ),
                 "schema_version": _SCHEMA_VERSION,
+                "stage2_schema_version": db.execute("SELECT COALESCE(MAX(version),0) FROM stage2_schema_migrations").fetchone()[0],
             }
 
     def rebuild_index(self) -> dict:
