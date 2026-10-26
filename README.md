@@ -1,5 +1,7 @@
 # CTF Knowledge Agent
 
+协作仓库：[SWPU-NSS-Dev/CTF-Knowledge-Agent](https://github.com/SWPU-NSS-Dev/CTF-Knowledge-Agent)。多人分工、目录责任、共享接口与 PR 验收流程见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
 CTF Knowledge Agent 是一个本地优先的 CTF 资料采集、混合检索与本地 AI 助手。Stage 2 在 Stage 1 的采集、不可变原始快照和 SQLite 版本存储上，增加 Ollama 本地模型、知识抽取、关键词与语义混合检索，以及 OpenAI 兼容聊天 API。模型输出属于 AI 推断，引用可追溯到原文，但不会自动标记为人工验证。
 
 第三阶段增加带证据的 AWDP 图谱、只读多步 Agent、人工审核和中文本地工作台。关系引用不可变文章版本，审核前保持候选状态。没有可用模型时，Agent 返回明确标记的确定性证据报告。管理写入与模型生成使用配置的 bearer token。
