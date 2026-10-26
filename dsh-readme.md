@@ -127,3 +127,15 @@ All checks passed!
   “可以用 `current_identities` 归档其余全部文章”的授权。
 - 每轮验证至少跑：`pytest -q`、`ruff check` 自己改动的路径、一次带
   `--max-items` 的真实小量采集。
+
+### GitHub Actions 状态（重要）
+
+PR #1 的 CI 显示 failure，但**不是代码问题**：
+
+- `main` 上的既有提交 `58fb44f`（stage-3，非本 PR 内容）CI 同样 failure；
+- 该 job 在 **2 秒内**结束，且 `steps` 数组为空——没有任何步骤被执行，
+  属于 runner/billing 层面的失败，而非 `pytest` 或 `ruff` 报错；
+- 仓库历史已有两次同类记录：`9937a6f`、`769ef68`（"record remote CI … blocker"）。
+
+因此本 PR 的验收依据是本地实测（163 passed、ruff 全通过、真实线上采集 15 篇入库），
+不是 CI。若后续账号/额度恢复，重跑该 workflow 即可。
