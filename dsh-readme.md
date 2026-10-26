@@ -6,6 +6,8 @@
 ## 轮次 1 — 2026-10-26
 
 **分支**：`feat/sources-ctf-writeups`
+**Commit**：`6d934c0235eb655270290573044969c44e053f11`
+**PR**：https://github.com/Zhouhang9527/CTF-Knowledge-Agent/pull/1
 **角色**：Source Adapter Developer（只新增来源模块，不改调度器/存储/API/CLI 公共接口）
 
 ### 交付内容
@@ -105,3 +107,23 @@ All checks passed!
 # 真实小量采集（会访问公网）
 .venv\Scripts\python.exe outputs/live_acceptance.py
 ```
+
+---
+
+## 轮次 2 — 2026-10-26（提交与交付）
+
+- 从 `origin/main`（含 stage-3 提交 `58fb44f`）重建分支，避免把其他代理的在途改动混入 PR。
+- 只暂存本轮负责的 38 个文件；upstream 在途的 `ctfka/crawler/sources/sitemap.py`、
+  `tests/test_sitemap_adapter.py` 保持未暂存，未进入 PR。
+- 提交 `6d934c0`，推送分支，创建 PR #1（base `main`，未合并）。
+- `dsh-readme.md` 已随提交进入 PR，后续轮次在此追加。
+
+### 交接提示
+
+- 若继续加站点，按同一套模式即可：先实测通用适配器是否够用 → 不够再写
+  `ctfka/crawler/sources/<slug>.py` + `tests/test_source_<slug>.py` +
+  `tests/fixtures/<slug>/`，最后在 `registry.py` 的 `BUILTINS` 里加一行。
+- **不要**给列表型适配器加名为 `complete_scan` 的属性：worker 会把该名称视为
+  “可以用 `current_identities` 归档其余全部文章”的授权。
+- 每轮验证至少跑：`pytest -q`、`ruff check` 自己改动的路径、一次带
+  `--max-items` 的真实小量采集。
