@@ -1,0 +1,16 @@
+data_dir: ./data
+workers: 8
+token: null
+host: 127.0.0.1
+port: 8000
+sources:
+  ctfwiki:
+    adapter: ctfwiki
+    enabled: true
+    max_items: null
+    options: {}
+  github:
+    adapter: github
+    enabled: false
+    max_items: null
+    options: {}

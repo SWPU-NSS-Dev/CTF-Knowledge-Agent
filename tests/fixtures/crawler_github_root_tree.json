@@ -1,0 +1,9 @@
+{
+  "sha": "root-tree-sha",
+  "tree": [
+    {"path": "README.md", "mode": "100644", "type": "blob", "sha": "root-readme-blob"},
+    {"path": "writeups", "mode": "040000", "type": "tree", "sha": "writeups-tree"},
+    {"path": "docs", "mode": "040000", "type": "tree", "sha": "docs-tree"}
+  ],
+  "truncated": false
+}

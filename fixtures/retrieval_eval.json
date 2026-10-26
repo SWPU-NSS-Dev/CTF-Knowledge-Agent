@@ -1,0 +1,27 @@
+{
+  "description": "Synthetic deterministic CTF retrieval fixture; benchmark does not measure network crawler throughput.",
+  "documents": [
+    {"id":"got-plt","title":"GOT and PLT relocation","content":"ELF dynamic linking resolves GOT and PLT entries. R_X86_64_JUMP_SLOT relocations point to function slots."},
+    {"id":"uaf","title":"Use after free lifecycle","content":"UAF occurs when a freed object remains reachable. Validate object lifetime and avoid stale pointers."},
+    {"id":"free-hook","title":"__free_hook and malloc@plt","content":"Older glibc exposes __free_hook. malloc@plt transfers through the Procedure Linkage Table."},
+    {"id":"cve","title":"CVE-2021-44228 analysis","content":"CVE-2021-44228 affects log4j-core. Identify vulnerable versions and apply the vendor patch."},
+    {"id":"elf","title":"ELF file structure","content":"ELF contains program headers, section headers, dynamic symbols, and relocation records."},
+    {"id":"stack-overflow","title":"栈溢出边界检查","content":"栈溢出通常来自未检查的缓冲区长度。使用有边界的复制并验证输入长度。"},
+    {"id":"arbitrary-write","title":"任意地址写漏洞","content":"任意地址写允许攻击者修改目标进程内存。限制写入目标并校验地址范围。"},
+    {"id":"ret2libc","title":"Return to libc basics","content":"A ret2libc chain reuses existing library code. Determine libc base and validate calling convention."},
+    {"id":"format-string","title":"Format string vulnerability","content":"An unsafe printf format string can disclose memory or write through positional specifiers."},
+    {"id":"heap","title":"Heap allocator metadata","content":"Heap allocators track bins, chunks, and metadata. Corrupted size fields can affect allocation behavior."}
+  ],
+  "queries": [
+    {"query":"GOT", "relevant":["got-plt"]},
+    {"query":"PLT", "relevant":["got-plt","free-hook"]},
+    {"query":"UAF", "relevant":["uaf"]},
+    {"query":"R_X86_64_JUMP_SLOT", "relevant":["got-plt"]},
+    {"query":"__free_hook", "relevant":["free-hook"]},
+    {"query":"malloc@plt", "relevant":["free-hook"]},
+    {"query":"CVE-2021-44228", "relevant":["cve"]},
+    {"query":"ELF", "relevant":["elf","got-plt"]},
+    {"query":"栈溢出", "relevant":["stack-overflow"]},
+    {"query":"任意地址写", "relevant":["arbitrary-write"]}
+  ]
+}

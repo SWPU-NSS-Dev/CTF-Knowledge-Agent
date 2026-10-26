@@ -1,0 +1,8 @@
+{
+  "sha": "writeups-tree",
+  "tree": [
+    {"path": "README.md", "mode": "100644", "type": "blob", "sha": "writeups-readme-blob"},
+    {"path": "2025", "mode": "040000", "type": "tree", "sha": "year-tree"}
+  ],
+  "truncated": false
+}
